@@ -1,0 +1,14 @@
+{
+    "name": "NetAssembly",
+    "references": [
+        "GUID:86989caad3e49ee458b95ee0ff3a35b0"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}
