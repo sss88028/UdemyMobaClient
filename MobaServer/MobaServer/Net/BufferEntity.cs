@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 
-namespace Game.Net
+namespace MobaServer.Net
 {
 	public class BufferEntity
 	{
@@ -33,7 +33,7 @@ namespace Game.Net
 		public int SessionId
 		{
 			get;
-			private set;
+			set;
 		}
 
 		public int SN
