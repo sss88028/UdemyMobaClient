@@ -68,7 +68,7 @@ namespace Game.Net
 					{
 						if (_sendPackages.TryRemove(buffer.SN, out var entity)) 
 						{
-							Debug.Log($"[UClient.Handle] SN : {buffer.SN}") ;
+							Debug.Log($"[UClient.Handle] get ack SN : {buffer.SN}") ;
 						}
 					}
 					break;
@@ -88,7 +88,7 @@ namespace Game.Net
 
 		public void Send(BufferEntity pacakge) 
 		{
-			pacakge.Time = Utility.Utility.Now;
+			pacakge.Time = TimeHelper.Now;
 			_sendSN++;
 			pacakge.SN = _sendSN;
 			
@@ -115,7 +115,7 @@ namespace Game.Net
 			var disconnectTime = _timeOutMS * _disconnectCount;
 			foreach (var package in _sendPackages.Values)
 			{
-				var dT = Utility.Utility.Now - package.Time;
+				var dT = TimeHelper.Now - package.Time;
 				if (dT >= disconnectTime)
 				{
 					OnDisconnect();
