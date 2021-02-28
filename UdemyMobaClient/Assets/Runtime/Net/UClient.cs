@@ -11,9 +11,6 @@ namespace Game.Net
 	public class UClient
 	{
 		#region private-field
-		private IPEndPoint _endPoint;
-		private USocket _uSocket;
-		private int _sessionId;
 		private int _sendSN = 0;
 		private int _handledSN = 0;
 		private Action<BufferEntity> _dispatchNetEvent;
@@ -25,12 +22,32 @@ namespace Game.Net
 		private const int _disconnectCount = 10;
 		#endregion private-field
 
+		#region public-property
+		public IPEndPoint EndPoint
+		{
+			get;
+			private set;
+		}
+
+		public USocket USocket
+		{
+			get;
+			private set;
+		}
+
+		public int SessionId
+		{
+			get;
+			private set;
+		}
+		#endregion public-property
+
 		#region public-method
 		public UClient(USocket uSocket, IPEndPoint endPoint, int sendSN, int handleSN, int sessionId, Action<BufferEntity> dispatchNetEvent) 
 		{
-			_uSocket = uSocket;
-			_endPoint = endPoint;
-			_sessionId = sessionId;
+			USocket = uSocket;
+			EndPoint = endPoint;
+			SessionId = sessionId;
 			_sendSN = sendSN;
 			_handledSN = handleSN;
 			_dispatchNetEvent = dispatchNetEvent;
@@ -40,9 +57,9 @@ namespace Game.Net
 
 		public void Handle(BufferEntity buffer) 
 		{
-			if (_sessionId == 0 && buffer.SessionId != 0) 
+			if (SessionId == 0 && buffer.SessionId != 0) 
 			{
-				_sessionId = buffer.SessionId;
+				SessionId = buffer.SessionId;
 			}
 
 			switch (buffer.MessageType) 
@@ -58,7 +75,7 @@ namespace Game.Net
 				case 1:
 					{
 						var ack = new BufferEntity(buffer);
-						_uSocket.SendAck(ack);
+						USocket.SendAck(ack);
 						HandleLoginPackage(buffer);
 					}
 					break;
@@ -69,14 +86,14 @@ namespace Game.Net
 			}
 		}
 
-		public void Sned(BufferEntity pacakge) 
+		public void Send(BufferEntity pacakge) 
 		{
 			pacakge.Time = Utility.Utility.Now;
 			_sendSN++;
 			pacakge.SN = _sendSN;
 			
 			pacakge.Encode(false);
-			if (_sessionId != 0)
+			if (SessionId != 0)
 			{
 				_sendPackages.TryAdd(_sendSN, pacakge);
 			}
@@ -85,12 +102,9 @@ namespace Game.Net
 			
 			}
 			
-			_uSocket.Send(pacakge.Buffer);
+			USocket.Send(pacakge.Buffer);
 			//_uSocket.Send(pacakge.Buffer, _endPoint);
 		}
-
-
-
 		#endregion public-method
 
 		#region private-method
@@ -110,7 +124,7 @@ namespace Game.Net
 				if (dT >= (package.RetryCount + 1) * _timeOutMS)
 				{
 					package.RetryCount++;
-					_uSocket.Send(package.Buffer);
+					USocket.Send(package.Buffer);
 					//_uSocket.Send(pacakge.Buffer, _endPoint);
 				}
 			}
@@ -120,7 +134,7 @@ namespace Game.Net
 		private void OnDisconnect()
 		{
 			_dispatchNetEvent = null;
-			_uSocket.Close();
+			USocket.Close();
 		}
 
 		private void HandleLoginPackage(BufferEntity buffer) 

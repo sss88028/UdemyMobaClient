@@ -14,18 +14,25 @@ namespace Game.Net
 		private const string _ip = "127.0.0.1";
 		private const int _prot = 8899;
 		private static IPEndPoint _server;
-		private static UClient _clientAgent;
 
 		private UdpClient _updClient;
 
 		private ConcurrentQueue<UdpReceiveResult> _awaitHanlde = new ConcurrentQueue<UdpReceiveResult>();
 		#endregion private-field
 
+		#region public-property
+		public static UClient ClientAgent 
+		{
+			get;
+			private set;
+		}
+		#endregion public-property
+
 		#region public-method
 		public USocket(Action<BufferEntity> dispatchNetEvent) 
 		{
 			_updClient = new UdpClient(0);
-			_clientAgent = _clientAgent ?? new UClient(this, _server, 0, 0, 0, dispatchNetEvent);
+			ClientAgent = ClientAgent ?? new UClient(this, _server, 0, 0, 0, dispatchNetEvent);
 		}
 
 		public async void ReceiviceTask() 
@@ -85,14 +92,14 @@ namespace Game.Net
 				if (_awaitHanlde.TryDequeue(out var data)) 
 				{
 					var buffer = new BufferEntity(data.RemoteEndPoint, data.Buffer);
-					_clientAgent.Handle(buffer);
+					ClientAgent.Handle(buffer);
 				}
 			}
 		}
 
 		public void Close()
 		{
-			_clientAgent = null;
+			ClientAgent = null;
 
 			_updClient?.Close();
 			_updClient = null;
