@@ -61,6 +61,7 @@ namespace MobaServer.Net
 
 		public void SendAck(BufferEntity ackPackage, IPEndPoint endPoint)
 		{
+			Debug.Log($"[USocket.SendAck] target sessionId : {ackPackage.SessionId}");
 			Send(ackPackage.Buffer, endPoint);
 		}
 
@@ -91,7 +92,7 @@ namespace MobaServer.Net
 				try
 				{
 					var result = await Socket.ReceiveAsync();
-
+					Debug.Log("[USocket.Recevice] Get client message");
 					_awaitHandle.Enqueue(result);
 					Recevice();
 				}
@@ -103,11 +104,12 @@ namespace MobaServer.Net
 			}
 		}
 
-		private async Task Handle() 
+		private void Handle()
+		//private async Task Handle() 
 		{
 			while (!_cancelToken.IsCancellationRequested)
 			{
-				if (_awaitHandle.Count <= 0) 
+				if (_awaitHandle.Count <= 0)
 				{
 					continue;
 				}
@@ -121,9 +123,10 @@ namespace MobaServer.Net
 						bufferEntity.SessionId = _sessionId;
 
 						CreateUClient(bufferEntity);
+						Debug.Log($"[USocket.Handle] Create client sessionId : {_sessionId}");
 					}
 
-					if (!_clients.TryGetValue(bufferEntity.SessionId, out var targetClient))
+					if (_clients.TryGetValue(bufferEntity.SessionId, out var targetClient))
 					{
 						targetClient.Handle(bufferEntity);
 					}
@@ -135,7 +138,7 @@ namespace MobaServer.Net
 		{
 			if (!_clients.TryGetValue(buffer.SessionId, out var client)) 
 			{
-				client = new UClient(this, buffer.EndPoint, 0, 0, buffer.SessionId);
+				client = new UClient(this, buffer.EndPoint, 0, 0, buffer.SessionId, _dispatchNetEvent);
 
 				_clients.TryAdd(buffer.SessionId, client);
 			}

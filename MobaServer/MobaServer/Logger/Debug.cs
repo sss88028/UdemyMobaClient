@@ -21,6 +21,7 @@ static class Debug
 		Console.WriteLine(log);
 		Console.ForegroundColor = tempColor;
 	}
+
 	public static void Log(int messageId, IMessage message)
 	{
 		var tempColor = Console.ForegroundColor;

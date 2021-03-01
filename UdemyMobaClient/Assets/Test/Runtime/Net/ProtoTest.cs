@@ -1,5 +1,6 @@
 ﻿using Game.Net;
 using ProtoMsg;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,8 @@ public class ProtoTest : MonoBehaviour
     private string _account;
     [SerializeField]
     private string _password;
+
+    private USocket _uSocket;
     #endregion private-field
 
     #region public-method
@@ -25,7 +28,26 @@ public class ProtoTest : MonoBehaviour
 
         var bufferEntity = BufferFactory.CreateAndSendPackage(1001, userRegisterC2S);
 
-        var userRegisterC2S1 = ProtobufHelper.FromBytes<UserRegisterC2S>(bufferEntity.Protocal);
+        //var userRegisterC2S1 = ProtobufHelper.FromBytes<UserRegisterC2S>(bufferEntity.Protocal);
     }
 	#endregion public-method
+
+	#region MonoBehaviour-method
+	private void Start()
+	{
+        _uSocket = new USocket(DispatchEvent);
+    }
+
+	private void Update()
+	{
+        _uSocket?.Handle();
+    }
+	#endregion MonoBehaviour-method
+
+	#region private-method
+	private void DispatchEvent(BufferEntity buffer)
+    {
+
+    }
+    #endregion private-method
 }

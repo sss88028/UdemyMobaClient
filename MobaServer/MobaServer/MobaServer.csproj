@@ -6,12 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Net\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="Google.Protobuf">
       <HintPath>libs\Google.Protobuf.dll</HintPath>
+    </Reference>
+    <Reference Include="LitJson">
+      <HintPath>libs\LitJson.dll</HintPath>
     </Reference>
   </ItemGroup>
 

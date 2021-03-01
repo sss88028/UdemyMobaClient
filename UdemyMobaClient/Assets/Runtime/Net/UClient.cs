@@ -57,8 +57,9 @@ namespace Game.Net
 
 		public void Handle(BufferEntity buffer) 
 		{
-			if (SessionId == 0 && buffer.SessionId != 0) 
+			if (SessionId == 0 && buffer.SessionId != 0)
 			{
+				Debug.Log($"[UClient.Handle] Get SessionId {buffer.SessionId}");
 				SessionId = buffer.SessionId;
 			}
 
@@ -97,11 +98,7 @@ namespace Game.Net
 			{
 				_sendPackages.TryAdd(_sendSN, pacakge);
 			}
-			else 
-			{
-			
-			}
-			
+
 			USocket.Send(pacakge.Buffer);
 			//_uSocket.Send(pacakge.Buffer, _endPoint);
 		}
@@ -112,17 +109,18 @@ namespace Game.Net
 		{
 			await Task.Delay(_timeOutMS);
 
-			var disconnectTime = _timeOutMS * _disconnectCount;
 			foreach (var package in _sendPackages.Values)
 			{
-				var dT = TimeHelper.Now - package.Time;
-				if (dT >= disconnectTime)
+				if (package.RetryCount >= _disconnectCount)
 				{
 					OnDisconnect();
 					return;
 				}
+
+				var dT = TimeHelper.Now - package.Time;
 				if (dT >= (package.RetryCount + 1) * _timeOutMS)
 				{
+					Debug.Log($"[UClient.CheckTimeOut] Retry, Count : {package.RetryCount}");
 					package.RetryCount++;
 					USocket.Send(package.Buffer);
 					//_uSocket.Send(pacakge.Buffer, _endPoint);
@@ -133,6 +131,7 @@ namespace Game.Net
 
 		private void OnDisconnect()
 		{
+			Debug.Log("[UClient.OnDisconnect]");
 			_dispatchNetEvent = null;
 			USocket.Close();
 		}

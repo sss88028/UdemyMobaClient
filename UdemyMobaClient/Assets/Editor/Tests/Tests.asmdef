@@ -4,7 +4,7 @@
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "Unity.PerformanceTesting",
-        "NetAssembly"
+        "Net"
     ],
     "includePlatforms": [
         "Editor"

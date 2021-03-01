@@ -33,9 +33,10 @@ namespace Game.Net
 		{
 			_updClient = new UdpClient(0);
 			ClientAgent = ClientAgent ?? new UClient(this, _server, 0, 0, 0, dispatchNetEvent);
+			ReceiveTask();
 		}
 
-		public async void ReceiviceTask() 
+		public async void ReceiveTask() 
 		{
 			while (_updClient != null) 
 			{
@@ -43,9 +44,11 @@ namespace Game.Net
 				{
 					var result = await _updClient.ReceiveAsync();
 					_awaitHanlde.Enqueue(result);
+					Debug.Log("[USocket.Recevice] Get server message");
 				}
-				catch (Exception)
+				catch (Exception e)
 				{
+					Debug.LogError($"[USocket.Recevice] {e.Message}");
 				}
 			}
 		}
@@ -92,6 +95,8 @@ namespace Game.Net
 				if (_awaitHanlde.TryDequeue(out var data)) 
 				{
 					var buffer = new BufferEntity(data.RemoteEndPoint, data.Buffer);
+
+					Debug.Log($"[USocket.Handle] MessageId : {buffer.MessageId}, SN : {buffer.SN}");
 					ClientAgent.Handle(buffer);
 				}
 			}

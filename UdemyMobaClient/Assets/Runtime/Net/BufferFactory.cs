@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Game.Net
 {
@@ -15,6 +16,8 @@ namespace Game.Net
         #region public-method
         public static BufferEntity CreateAndSendPackage(int messageId, IMessage message) 
         {
+            Debug.Log($"[BufferFactory.CreateAndSendPackage] message Id : {messageId} \n message : {JsonHelper.SerializeObject(message)}");
+
             var data = ProtobufHelper.ToBytes(message);
             var buffer = new BufferEntity(USocket.ClientAgent.EndPoint, USocket.ClientAgent.SessionId, 0, 0, (int)MessageType.Login, messageId, data);
             USocket.ClientAgent.Send(buffer);

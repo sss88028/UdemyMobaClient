@@ -78,6 +78,7 @@ namespace MobaServer.Net
 					{
 						var ack = new BufferEntity(buffer);
 						USocket.SendAck(ack, EndPoint);
+						Debug.Log($"[UClient.Handle] get SN : {buffer.SN}");
 						HandleLoginPackage(buffer);
 					}
 					break;
@@ -131,6 +132,7 @@ namespace MobaServer.Net
 			}
 
 			_handledSN = buffer.SN;
+			Debug.Log($"[UClient.HandleLoginPackage] handle Sn : {buffer.SN}");
 			_dispatchNetEvent?.Invoke(buffer);
 
 			if (_awaitHandlePackages.TryRemove(_handledSN + 1, out var nextBuffer))
@@ -143,16 +145,16 @@ namespace MobaServer.Net
 		{
 			await Task.Delay(_timeOutMS);
 
-			var disconnectTime = _timeOutMS * _disconnectCount;
 			foreach (var package in _sendPackages.Values)
 			{
-				var dT = TimeHelper.Now - package.Time;
-				if (dT >= disconnectTime)
+				if (package.RetryCount >= _disconnectCount)
 				{
 					Debug.LogError($"[UClient.CheckTimeOut] {SessionId} timeout");
 					USocket.RemoveClient(SessionId);
 					return;
 				}
+
+				var dT = TimeHelper.Now - package.Time;
 				if (dT >= (package.RetryCount + 1) * _timeOutMS)
 				{
 					package.RetryCount++;

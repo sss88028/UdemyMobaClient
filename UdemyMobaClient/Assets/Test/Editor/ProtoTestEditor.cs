@@ -15,9 +15,12 @@ public class ProtoTestEditor : Editor
 	{
 		base.OnInspectorGUI();
 
-		if (GUILayout.Button("Send Login"))
+		if (Application.isPlaying)
 		{
-			_target.SendLogin();
+			if (GUILayout.Button("Send Login"))
+			{
+				_target.SendLogin();
+			}
 		}
 	}
 
