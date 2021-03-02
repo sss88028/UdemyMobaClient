@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.cctu.gamedevtools": "https://github.com/sss88028/UnityDevTools.git",
     "com.unity.collab-proxy": "1.2.16",
     "com.unity.ext.nunit": "1.0.0",
     "com.unity.ide.rider": "1.1.0",
@@ -41,5 +42,11 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0"
+  },
+  "lock": {
+    "com.cctu.gamedevtools": {
+      "hash": "04ac3a3ba38456df9e918fa1247264a68403dbca",
+      "revision": "HEAD"
+    }
   }
 }

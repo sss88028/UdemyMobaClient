@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Game.Net
 {
-	public class UClient
+	internal class UClient
 	{
 		#region private-field
 		private int _sendSN = 0;
@@ -29,12 +29,6 @@ namespace Game.Net
 			private set;
 		}
 
-		public USocket USocket
-		{
-			get;
-			private set;
-		}
-
 		public int SessionId
 		{
 			get;
@@ -43,9 +37,8 @@ namespace Game.Net
 		#endregion public-property
 
 		#region public-method
-		public UClient(USocket uSocket, IPEndPoint endPoint, int sendSN, int handleSN, int sessionId, Action<BufferEntity> dispatchNetEvent) 
+		public UClient(IPEndPoint endPoint, int sendSN, int handleSN, int sessionId, Action<BufferEntity> dispatchNetEvent) 
 		{
-			USocket = uSocket;
 			EndPoint = endPoint;
 			SessionId = sessionId;
 			_sendSN = sendSN;

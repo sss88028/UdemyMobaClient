@@ -1,7 +1,8 @@
 {
     "name": "Net",
     "references": [
-        "GUID:90058600ae3400e43a7217d939d28fc0"
+        "GUID:90058600ae3400e43a7217d939d28fc0",
+        "GUID:a46c22edfcac550479c0b09fb6532f92"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

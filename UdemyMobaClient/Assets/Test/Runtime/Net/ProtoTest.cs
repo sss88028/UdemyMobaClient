@@ -12,8 +12,6 @@ public class ProtoTest : MonoBehaviour
     private string _account;
     [SerializeField]
     private string _password;
-
-    private USocket _uSocket;
     #endregion private-field
 
     #region public-method
@@ -35,19 +33,19 @@ public class ProtoTest : MonoBehaviour
 	#region MonoBehaviour-method
 	private void Start()
 	{
-        _uSocket = new USocket(DispatchEvent);
-    }
+		USocket.DispatchNetEvent += DispatchEvent;
+	}
 
-	private void Update()
+	private void OnDestroy()
 	{
-        _uSocket?.Handle();
-    }
+		USocket.Close();
+	}
 	#endregion MonoBehaviour-method
 
 	#region private-method
 	private void DispatchEvent(BufferEntity buffer)
     {
-
+		Debug.Log("$[ProtoTest.DispatchEvent] get buffer");
     }
     #endregion private-method
 }

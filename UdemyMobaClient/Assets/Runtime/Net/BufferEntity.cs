@@ -9,22 +9,17 @@ namespace Game.Net
 	public class BufferEntity
 	{
 		#region public-field
+		public int RetryCount = 0;
 		#endregion public-field
 
+		#region private-field
+		private IPEndPoint _endPoint;
+
+		private byte[] _protocol;
+		#endregion private-field
+
 		#region public-property
-		public int RetryCount
-		{
-			get;
-			set;
-		} = 0;
-
-		public IPEndPoint EndPoint
-		{
-			get;
-			private set;
-		}
-
-		public int ProtocalSize
+		public int ProtocolSize
 		{
 			get;
 			private set;
@@ -66,12 +61,6 @@ namespace Game.Net
 			private set;
 		}
 
-		public byte[] Protocal
-		{
-			get;
-			private set;
-		}
-
 		public byte[] Buffer
 		{
 			get;
@@ -87,26 +76,26 @@ namespace Game.Net
 		#region public-method
 		public BufferEntity(IPEndPoint endPoint, int seesion, int sId, int moudleId, int messageType, int messageId, byte[] protocal) 
 		{
-			ProtocalSize = protocal.Length;
+			ProtocolSize = protocal.Length;
 			SessionId = seesion;
 			SN = sId;
 			ModuleId = moudleId;
 			MessageType = messageType;
 			MessageId = messageId;
-			Protocal = protocal;
+			_protocol = protocal;
 		}
 
 		public BufferEntity(IPEndPoint endPoint, byte[] buffer) 
 		{
-			EndPoint = endPoint;
+			_endPoint = endPoint;
 			Buffer = buffer;
 			Decode();
 		}
 
 		public BufferEntity(BufferEntity buffer) 
 		{
-			ProtocalSize = 0;
-			EndPoint = buffer.EndPoint;
+			ProtocolSize = 0;
+			_endPoint = buffer._endPoint;
 			SessionId = buffer.SessionId;
 			SN = buffer.SN;
 			ModuleId = buffer.ModuleId;
@@ -119,10 +108,10 @@ namespace Game.Net
 
 		public byte[] Encode(bool isAck)
 		{
-			var dataSize = isAck ? _defaultSize : _defaultSize + ProtocalSize;
+			var dataSize = isAck ? _defaultSize : _defaultSize + ProtocolSize;
 			var data = new byte[dataSize];
 
-			var size = BitConverter.GetBytes(ProtocalSize);
+			var size = BitConverter.GetBytes(ProtocolSize);
 			var session = BitConverter.GetBytes(SessionId);
 			var sid = BitConverter.GetBytes(SN);
 			var moduleId = BitConverter.GetBytes(ModuleId);
@@ -139,7 +128,7 @@ namespace Game.Net
 			Array.Copy(messageId, 0, data, 28, 4);
 			if (!isAck)
 			{
-				Array.Copy(Protocal, 0, data, 32, Protocal.Length);
+				Array.Copy(_protocol, 0, data, 32, _protocol.Length);
 			}
 
 			Buffer = data;
@@ -156,7 +145,7 @@ namespace Game.Net
 			{
 				using (var writer = new BinaryWriter(ms))
 				{
-					writer.Write(ProtocalSize);
+					writer.Write(ProtocolSize);
 					writer.Write(SessionId);
 					writer.Write(SN);
 					writer.Write(ModuleId);
@@ -165,7 +154,7 @@ namespace Game.Net
 					writer.Write(MessageId);
 					if (!isAck)
 					{
-						writer.Write(Protocal);
+						writer.Write(_protocol);
 					}
 				}
 				data = ms.ToArray();
@@ -179,7 +168,7 @@ namespace Game.Net
 		private void Decode()
 		{
 			var startIndex = 0;
-			ProtocalSize = BitConverter.ToInt32(Buffer, startIndex);
+			ProtocolSize = BitConverter.ToInt32(Buffer, startIndex);
 
 			startIndex += 4;
 			SessionId = BitConverter.ToInt32(Buffer, startIndex);
@@ -202,9 +191,9 @@ namespace Game.Net
 			var isAck = MessageType == 0;
 			if (!isAck) 
 			{
-				Protocal = new byte[ProtocalSize];
+				_protocol = new byte[ProtocolSize];
 				startIndex += 4;
-				Array.Copy(Buffer, startIndex, Protocal, 0, ProtocalSize);
+				Array.Copy(Buffer, startIndex, _protocol, 0, ProtocolSize);
 			}
 		}
 
@@ -215,7 +204,7 @@ namespace Game.Net
 			{
 				using (var reader = new BinaryReader(ms))
 				{
-					ProtocalSize = reader.ReadInt32();
+					ProtocolSize = reader.ReadInt32();
 					SessionId = reader.ReadInt32();
 					SN = reader.ReadInt32();
 					ModuleId = reader.ReadInt32();
@@ -226,7 +215,7 @@ namespace Game.Net
 					var isAck = MessageType == 0;
 					if (!isAck)
 					{
-						Protocal = reader.ReadBytes(ProtocalSize);
+						_protocol = reader.ReadBytes(ProtocolSize);
 					}
 				}
 			}
