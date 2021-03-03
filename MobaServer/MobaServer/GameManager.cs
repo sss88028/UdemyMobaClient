@@ -3,14 +3,10 @@ using System;
 
 namespace MobaServer
 {
-	class Program
+	class GameManager
 	{
-
 		#region private-field
 		private static USocket _uSocket;
-		#endregion private-field
-
-		#region private-field
 		#endregion private-field
 
 		#region private-method
@@ -28,8 +24,8 @@ namespace MobaServer
 		}
 
 		private static void DispatchEvent(BufferEntity buffer) 
-		{ 
-		
+		{
+			NetEvent.Instance.Dispatch(buffer.MessageId, buffer);
 		}
 		#endregion private-method
 	}
