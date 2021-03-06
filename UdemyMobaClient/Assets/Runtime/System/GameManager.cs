@@ -4,28 +4,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoSingleton<GameManager>
+namespace Game.MainSystem
 {
-	#region private-field
-	private static USocket _uSocket;
-	#endregion private-field
-
-	#region MonoBehaviour-method
-	private void Start()
+	public class GameManager : MonoSingleton<GameManager>
 	{
-		_uSocket = new USocket(DispatcNetHandler);
-	}
+		#region private-field
+		private static USocket _uSocket;
+		#endregion private-field
 
-	private void Update()
-	{
-		_uSocket?.Handle();
-	}
-	#endregion MonoBehaviour-method
+		#region MonoBehaviour-method
+		private void Start()
+		{
+			_uSocket = new USocket(DispatcNetHandler);
+		}
 
-	#region private-method
-	private void DispatcNetHandler(BufferEntity buffer) 
-	{
-		NetEvent.Instance.Dispatch(buffer.MessageId, buffer);
+		private void Update()
+		{
+			_uSocket?.Handle();
+		}
+		#endregion MonoBehaviour-method
+
+		#region private-method
+		private void DispatcNetHandler(BufferEntity buffer)
+		{
+			NetEvent.Instance.Dispatch(buffer.MessageId, buffer);
+		}
+		#endregion private-method
 	}
-	#endregion private-method
 }

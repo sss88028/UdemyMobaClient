@@ -1,4 +1,7 @@
-﻿using System.Collections;
+﻿using Game.Module;
+using Game.Net;
+using ProtoMsg;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,7 +12,8 @@ namespace Game.UI
 		#region public-method
 		public LoginUIController()
 		{
-
+			NetEvent.Instance.AddEventListener(1000, OnGetUserRegisterS2C);
+			NetEvent.Instance.AddEventListener(1001, OnGetUserLoginS2C);
 		}
 
 		public void Load() 
@@ -26,9 +30,65 @@ namespace Game.UI
 		{
 			LoginUIViewer.Close();
 		}
+
+		public void SaveRolesInfo(RolesInfo rolesInfo) 
+		{
+			PlayerModule.Instance.RolesInfo = rolesInfo;
+		}
 		#endregion public-method
 
 		#region private-method
+		private void OnGetUserRegisterS2C(BufferEntity buffer) 
+		{
+			var s2cMSG = ProtobufHelper.FromBytes<UserRegisterS2C>(buffer.Protocal);
+			switch (s2cMSG.Result) 
+			{
+				//success
+				case 0: 
+					{ 
+					}
+					break;
+				//Already register
+				case 3:
+					{
+					}
+					break;
+				default:
+					{
+						Debug.Log($"[LoginUIController.OnGetUserLoginS2C] Result {s2cMSG.Result}");
+					}
+					break;
+			}
+		}
+
+		private void OnGetUserLoginS2C(BufferEntity buffer)
+		{
+			var s2cMSG = ProtobufHelper.FromBytes<UserLoginS2C>(buffer.Protocal);
+			switch (s2cMSG.Result)
+			{
+				//success
+				case 0:
+					{
+						CloseUI();
+
+						if (s2cMSG.RolesInfo != null)
+						{
+							SaveRolesInfo(s2cMSG.RolesInfo);
+						}
+					}
+					break;
+				//No match
+				case 2:
+					{
+					}
+					break;
+				default:
+					{
+						Debug.Log($"[LoginUIController.OnGetUserLoginS2C] Result {s2cMSG.Result}");
+					}
+					break;
+			}
+		}
 		#endregion private-method
 	}
 }
