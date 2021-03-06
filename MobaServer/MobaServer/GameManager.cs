@@ -1,4 +1,5 @@
-﻿using MobaServer.Net;
+﻿using MobaServer.GameModule;
+using MobaServer.Net;
 using System;
 
 namespace MobaServer
@@ -10,8 +11,9 @@ namespace MobaServer
 		#endregion private-field
 
 		#region private-method
-		static void Main(string[] args)
+		private static void Main(string[] args)
 		{
+			GameModuleInit();
 			NetSystemInit();
 
 			Console.ReadLine();
@@ -26,6 +28,11 @@ namespace MobaServer
 		private static void DispatchEvent(BufferEntity buffer) 
 		{
 			NetEvent.Instance.Dispatch(buffer.MessageId, buffer);
+		}
+
+		private static void GameModuleInit() 
+		{
+			UserModule.Instance.Init();
 		}
 		#endregion private-method
 	}
