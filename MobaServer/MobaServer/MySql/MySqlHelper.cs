@@ -13,7 +13,7 @@ namespace MobaServer.MySql
         //其中一个是用于存放帐号 服务器列表 
         //另一个是游戏相关的数据库 每一个区的
         //public static string linkUserDB = "server=127.0.0.1;port=3306;database=loluser;user=root;password=123456;";
-        public static string linkGameDB = "server=127.0.0.1;port=3306;database=lolgame;user=root;password=123456;";
+        public static string linkGameDB = "server=127.0.0.1;port=3306;database=game;user=root;password=jack@833212;";
 
         //回收池 已经工作完的实体 
         public static List<MySqlEntity> RecoveryPool = new List<MySqlEntity>();
@@ -34,11 +34,10 @@ namespace MobaServer.MySql
         private static MySqlEntity Connect(ConnectType connectType)
         {
             var poolCount = RecoveryPool.Count;
-            Debug.Log("连接池的数量:" + poolCount);
+            Debug.Log($"[MySqlHelper.Connect] {poolCount}");
 
             for (int i = poolCount; i > 0; i--)
             {
-
                 //已经完成工作的实体
                 if (RecoveryPool[i - 1].state == 1)
                 {
@@ -63,9 +62,13 @@ namespace MobaServer.MySql
             {
                 //优化 TODO 用Task执行
                 case ConnectType.USER:
-                    return new MySqlEntity(connectType);//.mySqlConnection;
+                    {
+                        return new MySqlEntity(connectType);//.mySqlConnection;
+                    }
                 case ConnectType.GAME:
-                    return new MySqlEntity(connectType);//.mySqlConnection;
+                    {
+                        return new MySqlEntity(connectType);//.mySqlConnection;
+                    }
             }
             return null;
         }

@@ -12,9 +12,8 @@ public class DBUserInfo : DBBase<DBUserInfo>
     //查询 根据条件返回实体类
     public UserInfo Select(string sql)
     {
-
         UserInfo UserInfo = new UserInfo();
-        string sqlCmd = "select *from userinfo_a " + sql;
+        string sqlCmd = "select * from userinfo " + sql;
 
         //查的表明一定是类的名称
         var r = MySqlHelper.SelectCMD(ConnectType.GAME, sqlCmd);
@@ -42,7 +41,7 @@ public class DBUserInfo : DBBase<DBUserInfo>
     {
         List<UserInfo> UserInfoList = new List<UserInfo>();
         
-        string sqlCmd= "select *from userinfo_a " + sql;
+        string sqlCmd= "select * from userinfo " + sql;
         //查的表明一定是类的名称
         var r = MySqlHelper.SelectCMD(ConnectType.GAME, sqlCmd);
         if (r.HasRows == false)
@@ -55,7 +54,6 @@ public class DBUserInfo : DBBase<DBUserInfo>
             {
                 UserInfo UserInfo = new UserInfo();
 
-                
                 UserInfo.ID=r.GetInt32("ID");
                 UserInfo.Account=r.GetString("Account");
                 UserInfo.Password=r.GetString("Password"); 
@@ -70,7 +68,7 @@ public class DBUserInfo : DBBase<DBUserInfo>
     //删除-key 根据条件删除 
     public bool Delete(string sql)
     {
-        string sqlCmd= "delete from userinfo_a " + sql;
+        string sqlCmd= "delete from userinfo " + sql;
         bool b = MySqlHelper.DeleteCMD(ConnectType.GAME, sqlCmd);
 
         return b;
@@ -82,7 +80,7 @@ public class DBUserInfo : DBBase<DBUserInfo>
         //ikey需要通过运算获得  
         //ivalue需要通过append
         //string sqlCmd = "insert into userinfo_a("+ikey+") values("+ivalues+")";
-		string sqlCmd = "insert into userinfo_a(Account,Password)  values("+"\"" + UserInfo.Account + "\""
+		string sqlCmd = "insert into userinfo(Account,Password)  values("+"\"" + UserInfo.Account + "\""
                         +"," +"\"" + UserInfo.Password + "\""
                         +")";
         bool b = MySqlHelper.AddCMD(ConnectType.GAME, sqlCmd);
@@ -101,7 +99,7 @@ public class DBUserInfo : DBBase<DBUserInfo>
             }
         }
         //UPDATE account  set id=115 where id=1 and name="mm"
-        string sqlCmd = "UPDATE userinfo_a set " + setSql + " " + whereSql;
+        string sqlCmd = "UPDATE userinfo set " + setSql + " " + whereSql;
         //UPDATE account  set id=115 where(id=1)
         bool b = MySqlHelper.UpdateCMD(ConnectType.GAME, sqlCmd);
         return b;

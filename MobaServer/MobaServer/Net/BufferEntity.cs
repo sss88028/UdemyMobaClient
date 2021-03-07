@@ -124,7 +124,7 @@ namespace MobaServer.Net
 
 			var size = BitConverter.GetBytes(ProtocalSize);
 			var session = BitConverter.GetBytes(SessionId);
-			var sid = BitConverter.GetBytes(SN);
+			var sn = BitConverter.GetBytes(SN);
 			var moduleId = BitConverter.GetBytes(ModuleId);
 			var time = BitConverter.GetBytes(Time);
 			var messageType = BitConverter.GetBytes(MessageType);
@@ -132,7 +132,7 @@ namespace MobaServer.Net
 
 			Array.Copy(size, 0, data, 0, 4);
 			Array.Copy(session, 0, data, 4, 4);
-			Array.Copy(sid, 0, data, 8, 4);
+			Array.Copy(sn, 0, data, 8, 4);
 			Array.Copy(moduleId, 0, data, 12, 4);
 			Array.Copy(time, 0, data, 16, 8);
 			Array.Copy(messageType, 0, data, 24, 4);

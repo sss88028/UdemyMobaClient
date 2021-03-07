@@ -50,8 +50,7 @@ namespace MobaServer.MySql
             }
             catch (Exception e)
             {
-
-                Debug.Log("打开数据库异常:" + e.Message);
+                Debug.LogError($"[MySqlEntity.CreateCMD] {e.Message}");
             }
         }
 
@@ -79,7 +78,7 @@ namespace MobaServer.MySql
             catch (Exception e)
             {
                 Result = false;
-                Debug.Log("执行数据库操作命令出错:" + e.Message);
+                Debug.LogError($"[MySqlEntity.ExecuteNonQuery] {e.Message}");
             }
             state = 1;//已经工作完
         }
@@ -96,7 +95,7 @@ namespace MobaServer.MySql
             }
             catch (Exception e)
             {
-                Debug.Log("执行数据库读取命令出错:" + e.Message); ;
+                Debug.LogError($"[MySqlEntity.ExecuteReader] {e.Message}");
             }
             state = 1;
         }

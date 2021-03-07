@@ -10,6 +10,16 @@ namespace MobaServer
 		private static USocket _uSocket;
 		#endregion private-field
 
+		#region public-property
+		public static USocket USocket 
+		{
+			get 
+			{
+				return _uSocket;
+			}
+		}
+		#endregion public-property
+
 		#region private-method
 		private static void Main(string[] args)
 		{

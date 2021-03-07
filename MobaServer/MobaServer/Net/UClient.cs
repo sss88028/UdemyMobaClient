@@ -41,11 +41,11 @@ namespace MobaServer.Net
 			private set;
 		}
 
-		public bool IsConnect 
+		public bool IsConnect
 		{
 			get;
 			private set;
-		}
+		} = true;
 		#endregion public-property
 
 		#region public-method

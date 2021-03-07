@@ -27,6 +27,12 @@ namespace MobaServer.Net
             }
             return null;
         }
+
+        public static BufferEntity CreateAndSendPackage(BufferEntity request, IMessage message)
+        {
+            UClient client = GameManager.USocket.GetClient(request.SessionId);
+            return CreateAndSendPackage(client, request.MessageId, message);
+        }
         #endregion public-method
     }
 }
