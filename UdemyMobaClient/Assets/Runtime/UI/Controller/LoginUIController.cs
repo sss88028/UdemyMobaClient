@@ -1,4 +1,4 @@
-﻿using Game.Module;
+﻿using Game.Model;
 using Game.Net;
 using ProtoMsg;
 using System.Collections;
@@ -33,7 +33,7 @@ namespace Game.UI
 
 		public void SaveRolesInfo(RolesInfo rolesInfo) 
 		{
-			PlayerModule.Instance.RolesInfo = rolesInfo;
+			PlayerModel.Instance.RolesInfo = rolesInfo;
 		}
 		#endregion public-method
 
@@ -41,6 +41,7 @@ namespace Game.UI
 		private void OnGetUserRegisterS2C(BufferEntity buffer) 
 		{
 			var s2cMSG = ProtobufHelper.FromBytes<UserRegisterS2C>(buffer.Protocal);
+			Debug.Log($"[LoginUIController.OnGetUserLoginS2C] Result {s2cMSG.Result}");
 			switch (s2cMSG.Result) 
 			{
 				//success
@@ -53,17 +54,13 @@ namespace Game.UI
 					{
 					}
 					break;
-				default:
-					{
-						Debug.Log($"[LoginUIController.OnGetUserLoginS2C] Result {s2cMSG.Result}");
-					}
-					break;
 			}
 		}
 
 		private void OnGetUserLoginS2C(BufferEntity buffer)
 		{
 			var s2cMSG = ProtobufHelper.FromBytes<UserLoginS2C>(buffer.Protocal);
+			Debug.Log($"[LoginUIController.OnGetUserLoginS2C] Result {s2cMSG.Result}");
 			switch (s2cMSG.Result)
 			{
 				//success
@@ -80,11 +77,6 @@ namespace Game.UI
 				//No match
 				case 2:
 					{
-					}
-					break;
-				default:
-					{
-						Debug.Log($"[LoginUIController.OnGetUserLoginS2C] Result {s2cMSG.Result}");
 					}
 					break;
 			}
