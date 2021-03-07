@@ -45,13 +45,17 @@ namespace Game.UI
 			switch (s2cMSG.Result) 
 			{
 				//success
-				case 0: 
-					{ 
+				case 0:
+					{
+						TipUIViewer.SetText("Register Success!!");
+						TipUIViewer.Open(GoToCreateRole, GoToCreateRole);
 					}
 					break;
 				//Already register
 				case 3:
 					{
+						TipUIViewer.SetText("Account exist!!");
+						TipUIViewer.Open();
 					}
 					break;
 			}
@@ -71,15 +75,32 @@ namespace Game.UI
 						if (s2cMSG.RolesInfo != null)
 						{
 							SaveRolesInfo(s2cMSG.RolesInfo);
+							GoToLobby();
+						}
+						else 
+						{
+							GoToCreateRole();
 						}
 					}
 					break;
 				//No match
 				case 2:
 					{
+						TipUIViewer.SetText("Account not exist!!");
+						TipUIViewer.Open();
 					}
 					break;
 			}
+		}
+		private void GoToCreateRole()
+		{
+			GameFlow.Instance.Flow.SetTrigger("Next");
+		}
+
+		private void GoToLobby()
+		{
+			GameFlow.Instance.Flow.SetBool("HasRole", true);
+			GameFlow.Instance.Flow.SetTrigger("Next");
 		}
 		#endregion private-method
 	}

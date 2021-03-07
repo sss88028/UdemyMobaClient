@@ -9,6 +9,18 @@ EditorBuildSettings:
     path: Assets/Scenes/StartUp.unity
     guid: ff41436f13999f949a35c45139e779c3
   - enabled: 1
+    path: Assets/Scenes/Empty.unity
+    guid: 4ab535bc4f95b604daadc5d9fd7d13a7
+  - enabled: 1
     path: Assets/Scenes/UIs/LoginUI.unity
     guid: 2d5664eab45fb6445863f556b98ed398
+  - enabled: 1
+    path: Assets/Scenes/UIs/LobbyUI.unity
+    guid: effdc8ecb714d854d80249f84c3cbf5d
+  - enabled: 1
+    path: Assets/Scenes/UIs/RoomUI.unity
+    guid: 7f59de249feaa7349bf9fe510e26fde6
+  - enabled: 1
+    path: Assets/Scenes/UIs/TipUI.unity
+    guid: 4c2357e28edf5c244b4059cd23463dab
   m_configObjects: {}

@@ -6,6 +6,7 @@ using UnityEngine;
 public class GameFlow : MonoSingleton<GameFlow>
 {
 	#region private-field
+	[SerializeField]
 	private Animator _gameFlow;
 	#endregion private-field
 

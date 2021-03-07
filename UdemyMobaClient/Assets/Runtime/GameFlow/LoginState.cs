@@ -3,13 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LoginState : StateMachineBehaviour
+namespace Game.State
 {
-	#region public-method
-	public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+	public class LoginState : StateMachineBehaviour
 	{
-		base.OnStateEnter(animator, stateInfo, layerIndex);
-		LoginUIController.Instance.OpenUI();
+		#region public-method
+		public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+		{
+			base.OnStateEnter(animator, stateInfo, layerIndex);
+			LoginUIController.Instance.OpenUI();
+		}
+		#endregion public-method
 	}
-	#endregion public-method
+
 }
