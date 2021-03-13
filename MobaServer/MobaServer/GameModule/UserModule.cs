@@ -1,5 +1,6 @@
 ﻿using MobaServer.MySql;
 using MobaServer.Net;
+using MobaServer.Player;
 using ProtoMsg;
 using System;
 using System.Collections.Generic;
@@ -65,11 +66,18 @@ namespace MobaServer.GameModule
 				s2cMSG.UserInfo = userInfo;
 				s2cMSG.Result = 0;
 
+				var playerEntity = new PlayerEntity();
+				playerEntity.UserInfo = userInfo;
+				playerEntity.Session = request.SessionId;
+
 				var rolesInfo = DBRolesInfo.Instance.Select(MySqlCMD.Where("ID", c2sMSG.UserInfo.Account));
 				if (rolesInfo != null) 
 				{
 					s2cMSG.RolesInfo = rolesInfo;
+					playerEntity.RolesInfo = rolesInfo;
 				}
+
+				PlayerManager.Add(request.SessionId, s2cMSG.UserInfo.ID, playerEntity);
 			}
 			else
 			{

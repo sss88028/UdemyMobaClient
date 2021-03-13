@@ -23,4 +23,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/UIs/TipUI.unity
     guid: 4c2357e28edf5c244b4059cd23463dab
+  - enabled: 1
+    path: Assets/Scenes/UIs/RolesUI.unity
+    guid: bfd3dc6f03ce0ea45a0e75f11e01d741
   m_configObjects: {}

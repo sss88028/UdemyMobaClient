@@ -94,11 +94,13 @@ namespace Game.UI
 		}
 		private void GoToCreateRole()
 		{
+			CloseUI();
 			GameFlow.Instance.Flow.SetTrigger("Next");
 		}
 
 		private void GoToLobby()
 		{
+			CloseUI();
 			GameFlow.Instance.Flow.SetBool("HasRole", true);
 			GameFlow.Instance.Flow.SetTrigger("Next");
 		}

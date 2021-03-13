@@ -43,6 +43,7 @@ namespace MobaServer
 		private static void GameModuleInit() 
 		{
 			UserModule.Instance.Init();
+			RolesModule.Instance.Init();
 		}
 		#endregion private-method
 	}
