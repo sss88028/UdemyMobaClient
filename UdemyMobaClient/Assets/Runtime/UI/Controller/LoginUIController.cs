@@ -38,6 +38,18 @@ namespace Game.UI
 		#endregion public-method
 
 		#region private-method
+		private void AddEventListener()
+		{
+			NetEvent.Instance.AddEventListener(1000, OnGetUserRegisterS2C);
+			NetEvent.Instance.AddEventListener(1001, OnGetUserLoginS2C);
+		}
+
+		private void RemoveEventListener()
+		{
+			NetEvent.Instance.RemoveEventListener(1000, OnGetUserRegisterS2C);
+			NetEvent.Instance.RemoveEventListener(1001, OnGetUserLoginS2C);
+		}
+
 		private void OnGetUserRegisterS2C(BufferEntity buffer) 
 		{
 			var s2cMSG = ProtobufHelper.FromBytes<UserRegisterS2C>(buffer.Protocal);
@@ -92,6 +104,7 @@ namespace Game.UI
 					break;
 			}
 		}
+
 		private void GoToCreateRole()
 		{
 			CloseUI();

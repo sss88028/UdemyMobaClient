@@ -5,20 +5,10 @@ using UnityEngine;
 
 namespace Game.Model
 {
-	public class PlayerModel : Singleton<PlayerModel>
+	public class RoomModel : Singleton<RoomModel>
 	{
 		#region public-property
-		public RolesInfo RolesInfo 
-		{ 
-			get; 
-			internal set;
-		}
 
-		public RoomInfo RoomInfo
-		{
-			get;
-			internal set;
-		}
 		#endregion public-property
 	}
 }

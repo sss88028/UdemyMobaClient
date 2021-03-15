@@ -67,6 +67,8 @@
     <Compile Include="Helper\JsonHelper.cs" />
     <Compile Include="Helper\TimeHelper.cs" />
     <Compile Include="Logger\Debug.cs" />
+    <Compile Include="Match\MatchEntity.cs" />
+    <Compile Include="Match\MatchManager.cs" />
     <Compile Include="MySql\MySqlCMD.cs" />
     <Compile Include="MySql\MySqlEntity.cs" />
     <Compile Include="MySql\MySqlHelper.cs" />

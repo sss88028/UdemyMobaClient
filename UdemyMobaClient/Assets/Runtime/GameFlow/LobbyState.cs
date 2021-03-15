@@ -1,4 +1,5 @@
 ﻿using CCTU.GameDevTools.MonoSingleton;
+using Game.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -36,7 +37,7 @@ namespace Game.State
 			{
 				return _asyncOperation.isDone;
 			});
-			GL.Clear(true, true, Color.clear);
+			LobbyUIController.Instance.OpenUI();
 		}
 		#endregion private-field
 	}
