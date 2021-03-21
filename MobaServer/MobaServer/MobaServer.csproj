@@ -64,6 +64,7 @@
     <Compile Include="GameModule\GameModuleBase.cs" />
     <Compile Include="GameModule\LobbyModule.cs" />
     <Compile Include="GameModule\RolesModule.cs" />
+    <Compile Include="GameModule\RoomModule.cs" />
     <Compile Include="GameModule\UserModule.cs" />
     <Compile Include="Helper\JsonHelper.cs" />
     <Compile Include="Helper\TimeHelper.cs" />
