@@ -1,4 +1,6 @@
-﻿using ProtoMsg;
+﻿using MobaServer.Match;
+using MobaServer.Room;
+using ProtoMsg;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +15,11 @@ namespace MobaServer.Player
 		public int Session;
 		public UserInfo UserInfo;
 		public RolesInfo RolesInfo;
+
+		public RoomEntity RoomEntity;
+		public int TeamId;
+
+		public MatchEntity MatchEntity;
 		#endregion public-field
 
 		#region public-method

@@ -35,6 +35,11 @@ namespace Game.UI
 		{
 			PlayerModel.Instance.RolesInfo = rolesInfo;
 		}
+
+		public RoomInfo GetRoomInfo() 
+		{
+			return PlayerModel.Instance.RoomInfo;
+		}
 		#endregion public-method
 
 		#region private-method

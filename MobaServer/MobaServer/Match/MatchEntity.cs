@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MobaServer.Match
 {
-	class MatchEntity
+	public class MatchEntity
 	{
 		#region private-field
 		public HashSet<PlayerEntity> PlayerEntity = new HashSet<PlayerEntity>();

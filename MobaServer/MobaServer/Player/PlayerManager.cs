@@ -33,7 +33,7 @@ namespace MobaServer.Player
 			return result;
 		}
 
-		public static bool TryGetPlayerEntityByUserId(int rolesID, out PlayerEntity player) 
+		public static bool TryGetPlayerEntityByRolesId(int rolesID, out PlayerEntity player) 
 		{
 			return _id2PlayerDict.TryGetValue(rolesID, out player);
 		}

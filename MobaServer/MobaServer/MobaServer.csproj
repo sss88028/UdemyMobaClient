@@ -62,6 +62,7 @@
     <Compile Include="Dispatcher\NetEvent.cs" />
     <Compile Include="GameManager.cs" />
     <Compile Include="GameModule\GameModuleBase.cs" />
+    <Compile Include="GameModule\LobbyModule.cs" />
     <Compile Include="GameModule\RolesModule.cs" />
     <Compile Include="GameModule\UserModule.cs" />
     <Compile Include="Helper\JsonHelper.cs" />
@@ -86,6 +87,9 @@
     <Compile Include="ProtobufData\RoomPB.cs" />
     <Compile Include="ProtobufData\RootPB.cs" />
     <Compile Include="ProtobufData\UserPB.cs" />
+    <Compile Include="Room\RoomEntity.cs" />
+    <Compile Include="Room\RoomManager.cs" />
+    <Compile Include="Singleton.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

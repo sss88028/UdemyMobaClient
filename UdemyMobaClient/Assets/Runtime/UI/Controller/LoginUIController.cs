@@ -12,8 +12,6 @@ namespace Game.UI
 		#region public-method
 		public LoginUIController()
 		{
-			NetEvent.Instance.AddEventListener(1000, OnGetUserRegisterS2C);
-			NetEvent.Instance.AddEventListener(1001, OnGetUserLoginS2C);
 		}
 
 		public void Load() 
@@ -23,11 +21,13 @@ namespace Game.UI
 
 		public void OpenUI() 
 		{
+			AddEventListener();
 			LoginUIViewer.Open();
 		}
 
 		public void CloseUI() 
 		{
+			RemoveEventListener();
 			LoginUIViewer.Close();
 		}
 
