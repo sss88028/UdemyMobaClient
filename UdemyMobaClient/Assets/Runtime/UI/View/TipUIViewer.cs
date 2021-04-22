@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,97 +12,70 @@ namespace Game.UI
     public class TipUIViewer : BaseUIViewer<TipUIViewer>
 	{
 		#region private-field
-		private static string _sceneName = "TipUI";
-		private static bool _isOpen = false;
+		private static string _sceneName = "UI/TipUI.unity";
 
 		[SerializeField]
 		private Text _hintText;
-
-		private static string _textContent;
-		private static Action _onClickEnterEvent;
-		private static Action _onClickCloseEvent;
+		[SerializeField]
+		private Button _buttonAccept;
+		[SerializeField]
+		private Button _buttonCancel;
+		[SerializeField]
+		private Button _buttonClose;
 		#endregion private-field
 
 		#region public-method
-		public static void Open(Action onClickEnterEvent = null, Action onClickCloseEvent = null)
+		public static async Task<bool> Open(CancellationToken ct)
 		{
-			_isOpen = true;
-			_onClickEnterEvent = onClickEnterEvent;
-			_onClickCloseEvent = onClickCloseEvent;
-			if (_instance == null)
+			var instance = await GetInstance(_sceneName);
+			instance.OpenInternal();
+
+			var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+			try
 			{
-				LoadScene(_sceneName);
+				var linkedCt = linkedCts.Token;
+				var buttonTask = SelectButton(linkedCt, instance._buttonAccept, instance._buttonCancel, instance._buttonClose);
+				var finishedTask = await Task.WhenAny(buttonTask);
+
+				await finishedTask;
+				linkedCts.Cancel();
+
+				return finishedTask == buttonTask && buttonTask.Result == instance._buttonAccept;
 			}
-			else
+			finally
 			{
-				_instance.OpenInternal();
-			}
-		}
-
-		public static void Close()
-		{
-			_isOpen = false;
-
-			_instance?.CloseInternal();
-			_onClickEnterEvent = null;
-			_onClickCloseEvent = null;
-		}
-
-		public static void SetText(string textContent) 
-		{
-			_textContent = textContent;
-
-			_instance?.SetTextInternal();
-		}
-
-		public static void LoadScene()
-		{
-			LoadScene(_sceneName);
-		}
-
-		public void OnClickEnterHanlder() 
-		{
-			if (_onClickEnterEvent != null)
-			{
-				_onClickEnterEvent.Invoke();
-				_onClickEnterEvent = null;
-			}
-			else 
-			{
-				Close();
+				linkedCts.Dispose();
 			}
 		}
-
-		public void OnClickCloseHanlder()
+		
+		public static async void SetText(string textContent) 
 		{
-			if (_onClickCloseEvent != null)
-			{
-				_onClickCloseEvent.Invoke();
-				_onClickCloseEvent = null;
-			}
-			else
-			{
-				Close();
-			}
+			var instance = await GetInstance(_sceneName);
+
+			instance?.SetTextInternal(textContent);
 		}
 		#endregion public-method
-
-		#region MonoBehaviour-method
-		private void Start()
-		{
-			if (_isOpen)
-			{
-				OpenInternal();
-				SetTextInternal();
-			}
-			else
-			{
-				CloseInternal();
-			}
-		}
-		#endregion MonoBehaviour-method
-
+		
 		#region private-method
+		private static async Task<Button> SelectButton(CancellationToken ct, params Button[] buttons)
+		{
+			var tasks = buttons.Select(PressButton);
+			var finishedTasks = await Task.WhenAny(tasks); ;
+			return finishedTasks.Result;
+		}
+
+		private static async Task<Button> PressButton(Button button)
+		{
+			bool isPress = false;
+			button.onClick.AddListener(() => isPress = true);
+
+			while (!isPress)
+			{
+				await Task.Yield();
+			}
+			return button;
+		}
+
 		private void OpenInternal()
 		{
 			gameObject.SetActive(true);
@@ -110,9 +86,9 @@ namespace Game.UI
 			gameObject.SetActive(false);
 		}
 
-		private void SetTextInternal() 
+		private void SetTextInternal(string textContent) 
 		{
-			_hintText.text = _textContent;
+			_hintText.text = textContent;
 		}
 		#endregion private-method
 	}

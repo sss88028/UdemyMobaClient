@@ -19,9 +19,7 @@ namespace Game.UI
 		}
 
 		#region private-field
-		private static string _sceneName = "LobbyUI";
-		private static bool _isOpen = false;
-		private static LobbyState _state;
+		private static string _sceneName = "UI/LobbyUI.unity";
 
 		[SerializeField]
 		private Text _nickNameText;
@@ -39,38 +37,33 @@ namespace Game.UI
 		private GameObject _matchingRankBtn;
 		[SerializeField]
 		private GameObject _matchingCancelBtn;
+
+		private LobbyState _currentState;
 		#endregion private-field
 
 		#region public-method
-		public static void Open()
+		public static async void Open()
 		{
-			_isOpen = true;
-			if (_instance == null)
-			{
-				LoadScene(_sceneName);
-			}
-			else
-			{
-				_instance.OpenInternal();
-			}
+			var instance = await GetInstance(_sceneName);
+			instance.OpenInternal();
 		}
 
-		public static void Close()
+		public static async void Close()
 		{
-			_isOpen = false;
-
-			_instance?.CloseInternal();
+			var instance = await GetInstance(_sceneName);
+			instance?.CloseInternal();
 		}
 
-		public static void LoadScene()
+		public static async void LoadScene()
 		{
-			LoadScene(_sceneName);
+			await GetInstance(_sceneName);
 		}
 
-		public static void SetState(LobbyState state) 
+		public static async void SetState(LobbyState state) 
 		{
-			_state = state;
-			_instance?.UpdateState();
+			var instance = await GetInstance(_sceneName);
+
+			instance?.UpdateState(state);
 		}
 
 		public void OnClickMatchingNormal() 
@@ -97,19 +90,6 @@ namespace Game.UI
 		#endregion public-method
 
 		#region MonoBehaviour-method
-		private void Start()
-		{
-			if (_isOpen)
-			{
-				OpenInternal();
-			}
-			else
-			{
-				CloseInternal();
-			}
-			UpdateState();
-		}
-
 		private void OnEnable()
 		{
 			SetRolesInfo();
@@ -127,9 +107,15 @@ namespace Game.UI
 			gameObject.SetActive(false);
 		}
 
-		private void UpdateState() 
+		private void UpdateState(LobbyState state) 
 		{
-			switch (_state)
+			if (_currentState == state)
+			{
+				return;
+			}
+
+			_currentState = state;
+			switch (_currentState)
 			{
 				case LobbyState.Idle:
 				case LobbyState.Entered:

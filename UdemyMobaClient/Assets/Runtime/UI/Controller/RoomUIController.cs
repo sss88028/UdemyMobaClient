@@ -19,12 +19,7 @@ namespace Game.UI
 		public RoomUIController()
 		{
 		}
-
-		public void Load()
-		{
-			LoginUIViewer.LoadScene();
-		}
-
+		
 		public void OpenUI()
 		{
 			AddEventListener();

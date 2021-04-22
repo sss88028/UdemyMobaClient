@@ -2,6 +2,8 @@
 using ProtoMsg;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,37 +12,23 @@ namespace Game.UI
     public class RolesUIViewer : BaseUIViewer<RolesUIViewer>
 	{
 		#region private-field
-		private static string _sceneName = "RolesUI";
-		private static bool _isOpen = false;
+		private static string _sceneName = "UI/RolesUI.unity";
 
 		[SerializeField]
 		private InputField _nameField = null;
 		#endregion private-field
 
 		#region public-method
-		public static void Open()
+		public static async void Open()
 		{
-			_isOpen = true;
-			if (_instance == null)
-			{
-				LoadScene(_sceneName);
-			}
-			else
-			{
-				_instance.OpenInternal();
-			}
+			var instance = await GetInstance(_sceneName);
+			instance.OpenInternal();
 		}
 
-		public static void Close()
+		public static async void Close()
 		{
-			_isOpen = false;
-
-			_instance?.CloseInternal();
-		}
-
-		public static void LoadScene()
-		{
-			LoadScene(_sceneName);
+			var instance = await GetInstance(_sceneName);
+			instance.CloseInternal();
 		}
 
 		public void OnCreateButtonClick()
@@ -57,21 +45,7 @@ namespace Game.UI
 			BufferFactory.CreateAndSendPackage(1201, msg);
 		}
 		#endregion public-method
-
-		#region MonoBehaviour-method
-		private void Start()
-		{
-			if (_isOpen)
-			{
-				OpenInternal();
-			}
-			else
-			{
-				CloseInternal();
-			}
-		}
-		#endregion MonoBehaviour-method
-
+		
 		#region private-method
 		private void OpenInternal()
 		{

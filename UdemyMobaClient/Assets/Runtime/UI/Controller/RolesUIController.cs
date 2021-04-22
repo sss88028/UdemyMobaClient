@@ -13,12 +13,7 @@ namespace Game.UI
 		public RolesUIController()
 		{
 		}
-
-		public void Load()
-		{
-			RolesUIViewer.LoadScene();
-		}
-
+		
 		public void OpenUI()
 		{
 			RolesUIViewer.Open();

@@ -10,8 +10,7 @@ namespace Game.UI
     public class LoginUIViewer : BaseUIViewer<LoginUIViewer>
 	{
 		#region private-field
-		private static string _sceneName = "LoginUI";
-		private static bool _isOpen = false;
+		private static string _sceneName = "UI/LoginUI.unity";
 
 		[SerializeField]
 		private InputField _accountInput = null;
@@ -20,31 +19,18 @@ namespace Game.UI
 		#endregion private-field
 
 		#region public-method
-		public static void Open() 
+		public static async void Open() 
 		{
-			_isOpen = true;
-			if (_instance == null)
-			{
-				LoadScene(_sceneName);
-			}
-			else 
-			{
-				_instance.OpenInternal();
-			}
+			var instance = await GetInstance(_sceneName);
+			instance.OpenInternal();
 		}
 
-		public static void Close()
+		public static async void Close()
 		{
-			_isOpen = false;
-
-			_instance?.CloseInternal();
+			var instance = await GetInstance(_sceneName);
+			instance.CloseInternal();
 		}
-
-		public static void LoadScene()
-		{
-			LoadScene(_sceneName);
-		}
-
+		
 		public void OnRegisterButtonClick() 
 		{
 			if (string.IsNullOrEmpty(_accountInput.text)) 
@@ -94,17 +80,6 @@ namespace Game.UI
 		#endregion public-method
 
 		#region MonoBehaviour-method
-		private void Start()
-		{
-			if (_isOpen)
-			{
-				OpenInternal();
-			}
-			else 
-			{
-				CloseInternal();
-			}
-		}
 		#endregion MonoBehaviour-method
 
 		#region private-method

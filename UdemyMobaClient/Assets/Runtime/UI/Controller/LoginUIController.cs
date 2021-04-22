@@ -3,6 +3,7 @@ using Game.Net;
 using ProtoMsg;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 namespace Game.UI
@@ -13,12 +14,7 @@ namespace Game.UI
 		public LoginUIController()
 		{
 		}
-
-		public void Load() 
-		{
-			LoginUIViewer.LoadScene();
-		}
-
+		
 		public void OpenUI() 
 		{
 			AddEventListener();
@@ -50,7 +46,7 @@ namespace Game.UI
 			NetEvent.Instance.RemoveEventListener(1001, OnGetUserLoginS2C);
 		}
 
-		private void OnGetUserRegisterS2C(BufferEntity buffer) 
+		private async void OnGetUserRegisterS2C(BufferEntity buffer) 
 		{
 			var s2cMSG = ProtobufHelper.FromBytes<UserRegisterS2C>(buffer.Protocal);
 			Debug.Log($"[LoginUIController.OnGetUserLoginS2C] Result {s2cMSG.Result}");
@@ -60,20 +56,21 @@ namespace Game.UI
 				case 0:
 					{
 						TipUIViewer.SetText("Register Success!!");
-						TipUIViewer.Open(GoToCreateRole, GoToCreateRole);
+						await TipUIViewer.Open(new CancellationToken());
+						GoToCreateRole();
 					}
 					break;
 				//Already register
 				case 3:
 					{
 						TipUIViewer.SetText("Account exist!!");
-						TipUIViewer.Open();
+						await TipUIViewer.Open(new CancellationToken());
 					}
 					break;
 			}
 		}
 
-		private void OnGetUserLoginS2C(BufferEntity buffer)
+		private async void OnGetUserLoginS2C(BufferEntity buffer)
 		{
 			var s2cMSG = ProtobufHelper.FromBytes<UserLoginS2C>(buffer.Protocal);
 			Debug.Log($"[LoginUIController.OnGetUserLoginS2C] Result {s2cMSG.Result}");
@@ -99,7 +96,7 @@ namespace Game.UI
 				case 2:
 					{
 						TipUIViewer.SetText("Account not exist!!");
-						TipUIViewer.Open();
+						await TipUIViewer.Open(new CancellationToken());
 					}
 					break;
 			}

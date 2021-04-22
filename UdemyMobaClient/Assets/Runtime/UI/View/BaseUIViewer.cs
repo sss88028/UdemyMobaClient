@@ -1,30 +1,34 @@
 ﻿using CCTU.GameDevTools.MonoSingleton;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.SceneManagement;
 
 namespace Game.UI
 {
     public abstract class BaseUIViewer<T> : MonoBehaviour where T : BaseUIViewer<T>
 	{
-		#region protected-field
-		protected static T _instance;
-		#endregion protected-field
-
 		#region private-method
+		private static T _instance;
 		private static bool _isLoding = false;
 		#endregion private-method
 
 		#region protected-method
-		protected static void LoadScene(string sceneName)
+		protected static async Task<T> GetInstance(string sceneName)
 		{
-			if (_isLoding) 
+			if (_instance != null)
 			{
-				return;
+				return _instance;
 			}
-			_isLoding = true;
-			GameSystem.Instance.StartCoroutine(LoadSceneAsync(sceneName));
+
+			Addressables.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+			while (_instance == null)
+			{
+				await Task.Yield();
+			}
+			return _instance;
 		}
 		#endregion protected-method
 
@@ -48,17 +52,5 @@ namespace Game.UI
 			_instance = null;
 		}
 		#endregion MonoBehaviour-method
-
-		#region private-method
-		private static IEnumerator LoadSceneAsync(string sceneName)
-		{
-			var asyncLoad = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
-			while (!asyncLoad.isDone)
-			{
-				yield return null;
-			}
-			_isLoding = false;
-		}
-		#endregion private-method
 	}
 }

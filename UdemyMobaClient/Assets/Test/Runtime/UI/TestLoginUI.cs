@@ -7,7 +7,7 @@ public class TestLoginUI : MonoBehaviour
 {
     void Start()
     {
-        LoginUIController.Instance.Load();
+        LoginUIController.Instance.OpenUI();
     }
 
 }

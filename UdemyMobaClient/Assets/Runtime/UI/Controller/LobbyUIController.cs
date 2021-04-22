@@ -3,6 +3,7 @@ using Game.Net;
 using ProtoMsg;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 namespace Game.UI
@@ -47,7 +48,7 @@ namespace Game.UI
 			NetEvent.Instance.RemoveEventListener(1302, OnGetLobbyCancelMatchS2C);
 		}
 
-		private void OnGetLobbyToMatchS2C(BufferEntity response)
+		private async void OnGetLobbyToMatchS2C(BufferEntity response)
 		{
 			var msg = ProtobufHelper.FromBytes<LobbyToMatchS2C>(response.Protocal);
 			if (msg.Result == 0)
@@ -56,8 +57,8 @@ namespace Game.UI
 			}
 			else 
 			{
-				TipUIViewer.Open();
 				TipUIViewer.SetText("Can't matching");
+				await TipUIViewer.Open(new CancellationToken());
 			}
 		}
 
