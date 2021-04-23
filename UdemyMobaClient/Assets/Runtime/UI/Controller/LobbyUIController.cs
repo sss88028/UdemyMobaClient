@@ -58,7 +58,7 @@ namespace Game.UI
 			else 
 			{
 				TipUIViewer.SetText("Can't matching");
-				await TipUIViewer.Open(new CancellationToken());
+				await TipUIViewer.Open();
 			}
 		}
 

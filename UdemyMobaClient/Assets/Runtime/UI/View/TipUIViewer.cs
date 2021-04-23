@@ -25,27 +25,10 @@ namespace Game.UI
 		#endregion private-field
 
 		#region public-method
-		public static async Task<bool> Open(CancellationToken ct)
+		public static async Task<bool> Open(CancellationToken ct = default)
 		{
 			var instance = await GetInstance(_sceneName);
-			instance.OpenInternal();
-
-			var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
-			try
-			{
-				var linkedCt = linkedCts.Token;
-				var buttonTask = SelectButton(linkedCt, instance._buttonAccept, instance._buttonCancel, instance._buttonClose);
-				var finishedTask = await Task.WhenAny(buttonTask);
-
-				await finishedTask;
-				linkedCts.Cancel();
-
-				return finishedTask == buttonTask && buttonTask.Result == instance._buttonAccept;
-			}
-			finally
-			{
-				linkedCts.Dispose();
-			}
+			return await instance.OpenInternal(ct);
 		}
 		
 		public static async void SetText(string textContent) 
@@ -57,28 +40,26 @@ namespace Game.UI
 		#endregion public-method
 		
 		#region private-method
-		private static async Task<Button> SelectButton(CancellationToken ct, params Button[] buttons)
-		{
-			var tasks = buttons.Select(PressButton);
-			var finishedTasks = await Task.WhenAny(tasks); ;
-			return finishedTasks.Result;
-		}
-
-		private static async Task<Button> PressButton(Button button)
-		{
-			bool isPress = false;
-			button.onClick.AddListener(() => isPress = true);
-
-			while (!isPress)
-			{
-				await Task.Yield();
-			}
-			return button;
-		}
-
-		private void OpenInternal()
+		private async Task<bool> OpenInternal(CancellationToken ct)
 		{
 			gameObject.SetActive(true);
+
+			var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+			try
+			{
+				var linkedCt = linkedCts.Token;
+				var buttonTask = UIUtility.SelectButton(linkedCt, _buttonAccept, _buttonCancel, _buttonClose);
+				var finishedTask = await Task.WhenAny(buttonTask);
+
+				await finishedTask;
+				linkedCts.Cancel();
+
+				return finishedTask == buttonTask && buttonTask.Result == _buttonAccept;
+			}
+			finally
+			{
+				linkedCts.Dispose();
+			}
 		}
 
 		private void CloseInternal()

@@ -12,7 +12,6 @@ namespace Game.UI
 	{
 		#region private-method
 		private static T _instance;
-		private static bool _isLoding = false;
 		#endregion private-method
 
 		#region protected-method

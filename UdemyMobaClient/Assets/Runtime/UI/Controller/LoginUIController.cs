@@ -1,5 +1,6 @@
 ﻿using Game.Model;
 using Game.Net;
+using Google.Protobuf;
 using ProtoMsg;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,15 +11,45 @@ namespace Game.UI
 {
 	public class LoginUIController : Singleton<LoginUIController>
 	{
+		public enum InputType
+		{
+			Login,
+			Register,
+		}
+
+		public struct LoginInfo
+		{
+			public InputType InputType;
+			public string Account;
+			public string Password;
+		}
+
+		#region private-field
+		private CancellationTokenSource _cancelToken;
+		private bool _isEventAdded = false;
+		#endregion private-field
+
 		#region public-method
 		public LoginUIController()
 		{
 		}
 		
-		public void OpenUI() 
+		public async void OpenUI()
 		{
+			if (_cancelToken != null)
+			{
+				_cancelToken.Cancel();
+				_cancelToken.Dispose();
+			}
+			_cancelToken = new CancellationTokenSource();
+
 			AddEventListener();
-			LoginUIViewer.Open();
+
+			var result = (await LoginUIViewer.Open(_cancelToken.Token))();
+			while (!result)
+			{
+				result = (await LoginUIViewer.Open(_cancelToken.Token))();
+			}
 		}
 
 		public void CloseUI() 
@@ -36,12 +67,22 @@ namespace Game.UI
 		#region private-method
 		private void AddEventListener()
 		{
+			if (_isEventAdded)
+			{
+				return;
+			}
+			_isEventAdded = true;
 			NetEvent.Instance.AddEventListener(1000, OnGetUserRegisterS2C);
 			NetEvent.Instance.AddEventListener(1001, OnGetUserLoginS2C);
 		}
 
 		private void RemoveEventListener()
 		{
+			if (!_isEventAdded)
+			{
+				return;
+			}
+			_isEventAdded = true;
 			NetEvent.Instance.RemoveEventListener(1000, OnGetUserRegisterS2C);
 			NetEvent.Instance.RemoveEventListener(1001, OnGetUserLoginS2C);
 		}
@@ -56,7 +97,7 @@ namespace Game.UI
 				case 0:
 					{
 						TipUIViewer.SetText("Register Success!!");
-						await TipUIViewer.Open(new CancellationToken());
+						await TipUIViewer.Open();
 						GoToCreateRole();
 					}
 					break;
@@ -64,7 +105,7 @@ namespace Game.UI
 				case 3:
 					{
 						TipUIViewer.SetText("Account exist!!");
-						await TipUIViewer.Open(new CancellationToken());
+						await TipUIViewer.Open();
 					}
 					break;
 			}
@@ -96,7 +137,7 @@ namespace Game.UI
 				case 2:
 					{
 						TipUIViewer.SetText("Account not exist!!");
-						await TipUIViewer.Open(new CancellationToken());
+						await TipUIViewer.Open();
 					}
 					break;
 			}

@@ -104,8 +104,8 @@ namespace MobaServer.Net
 			}
 		}
 
-		private void Handle()
-		//private async Task Handle() 
+		//private void Handle()
+		private async Task Handle() 
 		{
 			while (!_cancelToken.IsCancellationRequested)
 			{

@@ -16,13 +16,15 @@ namespace Game.UI
 
 		[SerializeField]
 		private InputField _nameField = null;
+		[SerializeField]
+		private Button _submitButton;
 		#endregion private-field
 
 		#region public-method
-		public static async void Open()
+		public static async Task<string> Open(CancellationToken ct = default)
 		{
 			var instance = await GetInstance(_sceneName);
-			instance.OpenInternal();
+			return await instance.OpenInternal(ct);
 		}
 
 		public static async void Close()
@@ -47,9 +49,26 @@ namespace Game.UI
 		#endregion public-method
 		
 		#region private-method
-		private void OpenInternal()
+		private async Task<string> OpenInternal(CancellationToken ct)
 		{
 			gameObject.SetActive(true);
+
+			var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+			try
+			{
+				var linkedCt = linkedCts.Token;
+				var buttonTask = UIUtility.SelectButton(linkedCt, _submitButton);
+				var finishedTask = await Task.WhenAny(buttonTask);
+
+				await finishedTask;
+				linkedCts.Cancel();
+
+				return _nameField.text;
+			}
+			finally
+			{
+				linkedCts.Dispose();
+			}
 		}
 
 		private void CloseInternal()
