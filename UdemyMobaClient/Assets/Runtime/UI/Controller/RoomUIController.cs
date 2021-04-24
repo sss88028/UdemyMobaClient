@@ -100,6 +100,12 @@ namespace Game.UI
 		private void OnGetRoomSelectHeroSkillS2C(BufferEntity response)
 		{
 			var msg = ProtobufHelper.FromBytes<RoomSelectHeroSkillS2C>(response.Protocal);
+			RoomUIViewer.SetHeroSkill(msg.RolesID, msg.GridID, msg.SkillID);
+
+			if (IsSelfRole(msg.RolesID))
+			{
+
+			}
 		}
 
 		private void OnGetRoomCloseS2C(BufferEntity response)

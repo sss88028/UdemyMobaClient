@@ -46,7 +46,6 @@ namespace Game.UI
 		{
 			_skillId = skillId;
 			_onSelectSkillEvent?.Invoke(_gridId, _skillId);
-			gameObject.SetActive(false);
 		}
 		#endregion private-method
 	}

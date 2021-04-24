@@ -27,7 +27,23 @@ namespace Game.UI
 
 		[SerializeField]
 		private UIHeroSkillInfo _uIRoleSkillInfo;
+
+		private UIHeroSkillDisplay[] _displays;
 		#endregion private-field
+
+		#region private-property
+		private UIHeroSkillDisplay[] Displays 
+		{
+			get 
+			{
+				if (_displays == null) 
+				{
+					_displays = GetComponentsInChildren<UIHeroSkillDisplay>(true);
+				}
+				return _displays;
+			}
+		}
+		#endregion private-property
 
 		#region public-method
 		public static async void Open()
@@ -54,6 +70,11 @@ namespace Game.UI
 			var instance = await GetInstance(_sceneName);
 			instance._leftTemList.SetHeroInfo(rolesId, heroId);
 			instance._rightTemList.SetHeroInfo(rolesId, heroId);
+		}
+
+		public static void SetHeroSkill(int rolesId, int gridId, int skillId)
+		{
+			_instance?.SetHeroSkillInternal(rolesId, gridId, skillId);
 		}
 
 		public void OnClickLock() 
@@ -87,6 +108,25 @@ namespace Game.UI
 			_rightTemList?.CreateRoles(_teamBRolesInfos);
 		}
 
+		private void SetHeroSkillInternal(int rolesId, int gridId, int skillId)
+		{
+			_leftTemList.SetHeroSkill(rolesId, gridId, skillId);
+			_rightTemList.SetHeroSkill(rolesId, gridId, skillId);
+
+			if (RoomUIController.Instance.IsSelfRole(rolesId))
+			{
+				foreach (var display in Displays)
+				{
+					if (display.GridId == gridId)
+					{
+						display.SetSkill(skillId);
+						_uIRoleSkillInfo.gameObject.SetActive(false);
+						break;
+					}
+				}
+			}
+		}
+
 		private void SetUpEvent()
 		{
 			SetUpHeroSelectButtonEvent();
@@ -109,8 +149,7 @@ namespace Game.UI
 
 		private void SetUpRolesSkillDisplay() 
 		{
-			var list = GetComponentsInChildren<UIHeroSkillDisplay>(true);
-			foreach (var button in list)
+			foreach (var button in Displays)
 			{
 				button.OnSelectGrid += OnSelectGridHandler;
 			}
