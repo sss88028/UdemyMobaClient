@@ -36,6 +36,13 @@ namespace Game.UI
 				unit.SetHeroInfo(heroId);
 			}
 		}
+		public void SetHeroSkill(int rolesId, int gridId, int skillId)
+		{
+			if (_rolesDict.TryGetValue(rolesId, out var unit))
+			{
+				unit.SetHeroSkill(gridId, skillId);
+			}
+		}
 		#endregion public-method
 
 		#region private-method

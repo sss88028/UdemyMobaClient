@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Game.MainSystem;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Game.UI
 {
@@ -14,6 +16,8 @@ namespace Game.UI
 		#region private-field
 		[SerializeField]
 		private int _gridId = -1;
+		[SerializeField]
+		private Image _skillIcon;
 		#endregion private-field
 
 		#region public-property
@@ -28,8 +32,8 @@ namespace Game.UI
 
 		#region public-method
 		public void SetSkill(int skillId) 
-		{ 
-		
+		{
+			ResourceManager.Instance.Load<Sprite>($"Image/GeneralSkill/{skillId}", OnHeroSkillSpriteLoaded);
 		}
 		#endregion public-method
 
@@ -37,6 +41,13 @@ namespace Game.UI
 		protected override void OnButtonClick()
 		{
 			OnSelectGrid?.Invoke(_gridId);
+		}
+		#endregion private-method
+
+		#region protected-method
+		private void OnHeroSkillSpriteLoaded(Sprite sprite, object[] param)
+		{
+			_skillIcon.sprite = sprite;
 		}
 		#endregion private-method
 	}
