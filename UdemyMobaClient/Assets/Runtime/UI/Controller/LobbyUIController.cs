@@ -1,5 +1,6 @@
 ﻿using Game.Model;
 using Game.Net;
+using Game.State;
 using ProtoMsg;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,8 +9,12 @@ using UnityEngine;
 
 namespace Game.UI
 {
-    public class LobbyUIController : Singleton<LobbyUIController>
+    public partial class LobbyUIController : Singleton<LobbyUIController>
 	{
+		#region private-field
+		private bool _isEventAdded = false;
+		#endregion private-field
+
 		#region public-method
 		public LobbyUIController()
 		{
@@ -36,6 +41,11 @@ namespace Game.UI
 		#region private-method
 		private void AddEventListener()
 		{
+			if (_isEventAdded) 
+			{
+				return;
+			}
+			_isEventAdded = true;
 			NetEvent.Instance.AddEventListener(1300, OnGetLobbyToMatchS2C);
 			NetEvent.Instance.AddEventListener(1301, OnGetLobbyUpdateMatchStateS2C);
 			NetEvent.Instance.AddEventListener(1302, OnGetLobbyCancelMatchS2C);
@@ -43,6 +53,11 @@ namespace Game.UI
 
 		private void RemoveEventListener()
 		{
+			if (!_isEventAdded)
+			{
+				return;
+			}
+			_isEventAdded = false;
 			NetEvent.Instance.RemoveEventListener(1300, OnGetLobbyToMatchS2C);
 			NetEvent.Instance.RemoveEventListener(1301, OnGetLobbyUpdateMatchStateS2C);
 			NetEvent.Instance.RemoveEventListener(1302, OnGetLobbyCancelMatchS2C);

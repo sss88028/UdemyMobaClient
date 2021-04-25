@@ -14,7 +14,7 @@ namespace Game.UI
     public class LoginUIViewer : BaseUIViewer<LoginUIViewer>
 	{
 		#region private-field
-		private static string _sceneName = "UI/LoginUI.unity";
+		private static string _sceneName = "LoginUI";
 
 		[SerializeField]
 		private InputField _accountInput = null;

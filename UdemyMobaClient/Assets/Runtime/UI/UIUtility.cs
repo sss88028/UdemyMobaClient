@@ -23,8 +23,11 @@ namespace Game.UI
 
 		private static async Task<Button> PressButton(Button button)
 		{
-			bool isPress = false;
-			button.onClick.AddListener(() => isPress = true);
+			var isPress = false;
+			if (button != null)
+			{
+				button.onClick.AddListener(() => isPress = true);
+			}
 
 			while (!isPress)
 			{

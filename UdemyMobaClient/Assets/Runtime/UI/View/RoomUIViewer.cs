@@ -16,7 +16,7 @@ namespace Game.UI
 		#endregion public-field
 
 		#region private-field
-		private static string _sceneName = "UI/RoomUI.unity";
+		private static string _sceneName = "RoomUI";
 		private static IEnumerable<RolesInfo> _teamARolesInfos;
 		private static IEnumerable<RolesInfo> _teamBRolesInfos;
 
@@ -72,9 +72,10 @@ namespace Game.UI
 			instance._rightTemList.SetHeroInfo(rolesId, heroId);
 		}
 
-		public static void SetHeroSkill(int rolesId, int gridId, int skillId)
+		public static async void SetHeroSkill(int rolesId, int gridId, int skillId)
 		{
-			_instance?.SetHeroSkillInternal(rolesId, gridId, skillId);
+			var instance = await GetInstance(_sceneName);
+			instance?.SetHeroSkillInternal(rolesId, gridId, skillId);
 		}
 
 		public void OnClickLock() 

@@ -12,7 +12,7 @@ namespace Game.UI
     public class TipUIViewer : BaseUIViewer<TipUIViewer>
 	{
 		#region private-field
-		private static string _sceneName = "UI/TipUI.unity";
+		private static string _sceneName = "TipUI";
 
 		[SerializeField]
 		private Text _hintText;

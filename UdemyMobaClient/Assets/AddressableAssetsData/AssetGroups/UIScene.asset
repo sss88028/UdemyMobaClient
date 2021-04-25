@@ -17,13 +17,41 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: a06230ca0455869469b89d461c54aeb3
   m_SerializeEntries:
-  - m_GUID: f803bfd8a2046d24c88953b232022958
-    m_Address: UI
+  - m_GUID: effdc8ecb714d854d80249f84c3cbf5d
+    m_Address: LobbyUI
     m_ReadOnly: 0
     m_SerializedLabels:
     - UIScene
-    m_MainAsset: {fileID: 102900000, guid: f803bfd8a2046d24c88953b232022958, type: 3}
-    m_TargetAsset: {fileID: 102900000, guid: f803bfd8a2046d24c88953b232022958, type: 3}
+    m_MainAsset: {fileID: 102900000, guid: effdc8ecb714d854d80249f84c3cbf5d, type: 3}
+    m_TargetAsset: {fileID: 102900000, guid: effdc8ecb714d854d80249f84c3cbf5d, type: 3}
+  - m_GUID: 2d5664eab45fb6445863f556b98ed398
+    m_Address: LoginUI
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UIScene
+    m_MainAsset: {fileID: 102900000, guid: 2d5664eab45fb6445863f556b98ed398, type: 3}
+    m_TargetAsset: {fileID: 102900000, guid: 2d5664eab45fb6445863f556b98ed398, type: 3}
+  - m_GUID: bfd3dc6f03ce0ea45a0e75f11e01d741
+    m_Address: RolesUI
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UIScene
+    m_MainAsset: {fileID: 102900000, guid: bfd3dc6f03ce0ea45a0e75f11e01d741, type: 3}
+    m_TargetAsset: {fileID: 102900000, guid: bfd3dc6f03ce0ea45a0e75f11e01d741, type: 3}
+  - m_GUID: 7f59de249feaa7349bf9fe510e26fde6
+    m_Address: RoomUI
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UIScene
+    m_MainAsset: {fileID: 102900000, guid: 7f59de249feaa7349bf9fe510e26fde6, type: 3}
+    m_TargetAsset: {fileID: 102900000, guid: 7f59de249feaa7349bf9fe510e26fde6, type: 3}
+  - m_GUID: 4c2357e28edf5c244b4059cd23463dab
+    m_Address: TipUI
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UIScene
+    m_MainAsset: {fileID: 102900000, guid: 4c2357e28edf5c244b4059cd23463dab, type: 3}
+    m_TargetAsset: {fileID: 102900000, guid: 4c2357e28edf5c244b4059cd23463dab, type: 3}
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 3172ef9bf22f7024fbc8a3c624c63ec7, type: 2}
   m_SchemaSet:

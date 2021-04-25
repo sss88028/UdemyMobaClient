@@ -12,7 +12,7 @@ namespace Game.UI
     public class RolesUIViewer : BaseUIViewer<RolesUIViewer>
 	{
 		#region private-field
-		private static string _sceneName = "UI/RolesUI.unity";
+		private static string _sceneName = "RolesUI";
 
 		[SerializeField]
 		private InputField _nameField = null;

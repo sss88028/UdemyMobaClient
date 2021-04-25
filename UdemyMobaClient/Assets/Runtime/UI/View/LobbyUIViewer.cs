@@ -3,6 +3,8 @@ using Game.Net;
 using ProtoMsg;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,7 +21,7 @@ namespace Game.UI
 		}
 
 		#region private-field
-		private static string _sceneName = "UI/LobbyUI.unity";
+		private static string _sceneName = "LobbyUI";
 
 		[SerializeField]
 		private Text _nickNameText;
@@ -32,13 +34,14 @@ namespace Game.UI
 		[SerializeField]
 		private GameObject _matchingTip;
 		[SerializeField]
-		private GameObject _matchingNormalBtn;
+		private Button _matchingNormalBtn;
 		[SerializeField]
-		private GameObject _matchingRankBtn;
+		private Button _matchingRankBtn;
 		[SerializeField]
-		private GameObject _matchingCancelBtn;
+		private Button _matchingCancelBtn;
 
 		private LobbyState _currentState;
+		private CancellationTokenSource _cts;
 		#endregion private-field
 
 		#region public-method
@@ -90,6 +93,17 @@ namespace Game.UI
 		#endregion public-method
 
 		#region MonoBehaviour-method
+		private void Start() 
+		{
+			_cts = new CancellationTokenSource();
+		}
+
+		protected override void OnDestroy()
+		{
+			base.OnDestroy();
+			_cts?.Cancel();
+		}
+
 		private void OnEnable()
 		{
 			SetRolesInfo();
@@ -118,22 +132,79 @@ namespace Game.UI
 			switch (_currentState)
 			{
 				case LobbyState.Idle:
+					{
+						_matchingCancelBtn.gameObject.SetActive(false);
+						_matchingTip.SetActive(false);
+						_matchingNormalBtn.gameObject.SetActive(true);
+						_matchingRankBtn.gameObject.SetActive(true);
+						WaitClickMatching(_cts.Token);
+					}
+					break;
 				case LobbyState.Entered:
 					{
-						_matchingCancelBtn.SetActive(false);
+						_matchingCancelBtn.gameObject.SetActive(false);
 						_matchingTip.SetActive(false);
-						_matchingNormalBtn.SetActive(true);
-						_matchingRankBtn.SetActive(true);
+						_matchingNormalBtn.gameObject.SetActive(true);
+						_matchingRankBtn.gameObject.SetActive(true);
 					}
 					break;
 				case LobbyState.Matching:
 					{
-						_matchingCancelBtn.SetActive(true);
+						_matchingCancelBtn.gameObject.SetActive(true);
 						_matchingTip.SetActive(true);
-						_matchingNormalBtn.SetActive(false);
-						_matchingRankBtn.SetActive(false);
+						_matchingNormalBtn.gameObject.SetActive(false);
+						_matchingRankBtn.gameObject.SetActive(false);
+
+						WaitClickCancel(_cts.Token);
 					}
 					break;
+			}
+		}
+
+		private async void WaitClickMatching(CancellationToken ct)
+		{
+			var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+			try
+			{
+				var linkedCt = linkedCts.Token;
+				var buttonTask = UIUtility.SelectButton(linkedCt, _matchingNormalBtn);
+				var finishedTask = await Task.WhenAny(buttonTask);
+
+				await finishedTask;
+				linkedCts.Cancel();
+
+				if (buttonTask.Result == _matchingNormalBtn)
+				{
+					BufferFactory.CreateAndSendPackage(1300, new LobbyToMatchC2S());
+				}
+			}
+			finally
+			{
+				linkedCts.Dispose();
+			}
+		}
+
+
+		private async void WaitClickCancel(CancellationToken ct)
+		{
+			var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+			try
+			{
+				var linkedCt = linkedCts.Token;
+				var buttonTask = UIUtility.SelectButton(linkedCt, _matchingCancelBtn);
+				var finishedTask = await Task.WhenAny(buttonTask);
+
+				await finishedTask;
+				linkedCts.Cancel();
+
+				if (buttonTask.Result == _matchingCancelBtn)
+				{
+					BufferFactory.CreateAndSendPackage(1302, new LobbyQuitMatchC2S());
+				}
+			}
+			finally
+			{
+				linkedCts.Dispose();
 			}
 		}
 		#endregion private-method
