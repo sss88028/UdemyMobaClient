@@ -1,10 +1,12 @@
-﻿using MobaServer.MySql;
+﻿using Moba.Utility;
+using MobaServer.MySql;
 using MobaServer.Net;
 using MobaServer.Player;
 using ProtoMsg;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using BufferFactory = MobaServer.Net.BufferFactory;
 
 namespace MobaServer.GameModule
 {
@@ -33,7 +35,7 @@ namespace MobaServer.GameModule
 			var s2cMSG = new UserRegisterS2C();
 			if (DBUserInfo.Instance.Select(sqlCMD) != null)
 			{
-				Debug.LogError("[UserModule.OnGetUserRegisterCSS] Account exist.");
+				MobaLogger.LogError("[UserModule.OnGetUserRegisterCSS] Account exist.");
 				s2cMSG.Result = 3;
 			}
 			else 

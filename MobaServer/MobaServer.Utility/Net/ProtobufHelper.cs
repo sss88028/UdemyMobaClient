@@ -5,8 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 
-
-namespace MobaServer.Net
+namespace Moba.Utility
 {
 	public static class ProtobufHelper
 	{

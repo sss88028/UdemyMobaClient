@@ -58,8 +58,6 @@
     <Compile Include="DBCMD\DBBase.cs" />
     <Compile Include="DBCMD\DBRolesInfo.cs" />
     <Compile Include="DBCMD\DBUserInfo.cs" />
-    <Compile Include="Dispatcher\EventBase.cs" />
-    <Compile Include="Dispatcher\NetEvent.cs" />
     <Compile Include="GameManager.cs" />
     <Compile Include="GameModule\GameModuleBase.cs" />
     <Compile Include="GameModule\LobbyModule.cs" />
@@ -99,6 +97,12 @@
     <Content Include="libs\Google.Protobuf.dll" />
     <Content Include="libs\LitJson.dll" />
     <Content Include="libs\MySql.Data.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MobaServer.Utility\MobaServer.Utility.csproj">
+      <Project>{b2011e44-8d4c-477f-bd48-454c1a13ac01}</Project>
+      <Name>MobaServer.Utility</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

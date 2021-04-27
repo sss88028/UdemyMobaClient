@@ -1,4 +1,5 @@
-﻿using MobaServer.Match;
+﻿using Moba.Utility;
+using MobaServer.Match;
 using MobaServer.Room;
 using ProtoMsg;
 using System;
@@ -25,7 +26,7 @@ namespace MobaServer.Player
 		#region public-method
 		public void Destroy() 
 		{
-			Debug.Log("[PlayerEntity.Destroy]");
+			MobaLogger.Log("[PlayerEntity.Destroy]");
 		}
 		#endregion public-method
 	}

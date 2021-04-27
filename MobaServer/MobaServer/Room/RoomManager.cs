@@ -42,7 +42,7 @@ namespace MobaServer.Room
 			var roomEntity = new RoomEntity(roomInfo);
 			if (!_roomDict.TryAdd(roomEntity.RoomID, roomEntity)) 
 			{
-				Debug.LogError($"[RoomManager.Add] {roomEntity.RoomID}");
+				MobaLogger.LogError($"[RoomManager.Add] {roomEntity.RoomID}");
 			}
 			var s2cMsg = new LobbyUpdateMatchStateS2C();
 			s2cMsg.Result = 0;

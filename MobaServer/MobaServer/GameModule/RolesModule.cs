@@ -1,4 +1,5 @@
-﻿using MobaServer.MySql;
+﻿using Moba.Utility;
+using MobaServer.MySql;
 using MobaServer.Net;
 using MobaServer.Player;
 using ProtoMsg;
@@ -52,7 +53,7 @@ namespace MobaServer.GameModule
 				else
 				{
 					s2cMSG.Result = 2;
-					Debug.LogError($"[RolesModule.OnGetRolesCreateC2S] Insert {c2sMSG.NickName} error.");
+					MobaLogger.LogError($"[RolesModule.OnGetRolesCreateC2S] Insert {c2sMSG.NickName} error.");
 				}
 			}
 			else

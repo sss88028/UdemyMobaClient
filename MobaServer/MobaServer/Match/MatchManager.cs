@@ -1,4 +1,5 @@
-﻿using MobaServer.Room;
+﻿using Moba.Utility;
+using MobaServer.Room;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -30,9 +31,10 @@ namespace MobaServer.Match
 				}
 				return true;
 			}
-			Debug.LogError($"[MatchManager.Add] Add pool failed, {matchEntity.TeamID}");
+			MobaLogger.LogError($"[MatchManager.Add] Add pool failed, {matchEntity.TeamID}");
 			return false;
 		}
+
 		public bool Remove(MatchEntity matchEntity)
 		{
 			return _pool.TryRemove(matchEntity.TeamID, out var entity);
@@ -42,7 +44,7 @@ namespace MobaServer.Match
 		#region private-method
 		private void MatchCompleteEvent() 
 		{
-			Debug.Log($"[MatchManager.MatchCompleteEvent]");
+			MobaLogger.Log($"[MatchManager.MatchCompleteEvent]");
 			var teamA = new List<MatchEntity>();
 			var teamB = new List<MatchEntity>();
 			for (var i = 0; i < MatchSize; i++) 

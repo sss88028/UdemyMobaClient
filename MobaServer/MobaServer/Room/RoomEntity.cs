@@ -68,7 +68,7 @@ namespace MobaServer.Room
 		{
 			if (!LoadingProgress.ContainsKey(rolesId)) 
 			{
-				Debug.LogError($"[RoomEntity.UpdateLoadProgress]");
+				MobaLogger.LogError($"[RoomEntity.UpdateLoadProgress]");
 				return true;
 			}
 			
@@ -191,7 +191,7 @@ namespace MobaServer.Room
 		{
 			if (!PlayerManager.TryGetPlayerEntityByRolesId(rolesInfo.RolesID, out var player))
 			{
-				Debug.LogError("[RoomEntity.RoomEntity] get player failed.");
+				MobaLogger.LogError("[RoomEntity.RoomEntity] get player failed.");
 				return;
 			}
 			var client = GameManager.USocket.GetClient(player.Session);

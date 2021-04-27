@@ -1,4 +1,5 @@
-﻿using MobaServer.GameModule;
+﻿using Moba.Utility;
+using MobaServer.GameModule;
 using MobaServer.Net;
 using System;
 
@@ -32,7 +33,7 @@ namespace MobaServer
 		private static void NetSystemInit()
 		{
 			_uSocket = new USocket(DispatchEvent);
-			Debug.Log("[Program.NetSystemInit] 0");
+			MobaLogger.Log("[Program.NetSystemInit] 0");
 		}
 
 		private static void DispatchEvent(BufferEntity buffer) 

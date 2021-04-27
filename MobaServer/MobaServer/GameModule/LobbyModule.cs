@@ -1,4 +1,5 @@
-﻿using MobaServer.Match;
+﻿using Moba.Utility;
+using MobaServer.Match;
 using MobaServer.Net;
 using MobaServer.Player;
 using ProtoMsg;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BufferFactory = MobaServer.Net.BufferFactory;
 
 namespace MobaServer.GameModule
 {
@@ -36,7 +38,7 @@ namespace MobaServer.GameModule
 
 			if (!PlayerManager.TryGetPlayerEntityBySessionId(request.SessionId, out var playerEntity)) 
 			{
-				Debug.LogError($"[LobbyModule.OnGetLobbyToMatchC2S] Can't get player by session : {request.SessionId}");
+				MobaLogger.LogError($"[LobbyModule.OnGetLobbyToMatchC2S] Can't get player by session : {request.SessionId}");
 				return;
 			}
 
@@ -54,7 +56,7 @@ namespace MobaServer.GameModule
 
 			if (!PlayerManager.TryGetPlayerEntityBySessionId(request.SessionId, out var playerEntity))
 			{
-				Debug.Log($"[LobbyModule.OnGetLobbyQuitMatchC2S] Can't get player by session : {request.SessionId}");
+				MobaLogger.Log($"[LobbyModule.OnGetLobbyQuitMatchC2S] Can't get player by session : {request.SessionId}");
 				return;
 			}
 

@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿using Moba.Utility;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,7 +51,7 @@ namespace MobaServer.MySql
             }
             catch (Exception e)
             {
-                Debug.LogError($"[MySqlEntity.CreateCMD] {e.Message}");
+                MobaLogger.LogError($"[MySqlEntity.CreateCMD] {e.Message}");
             }
         }
 
@@ -78,7 +79,7 @@ namespace MobaServer.MySql
             catch (Exception e)
             {
                 Result = false;
-                Debug.LogError($"[MySqlEntity.ExecuteNonQuery] {e.Message}");
+                MobaLogger.LogError($"[MySqlEntity.ExecuteNonQuery] {e.Message}");
             }
             state = 1;//已经工作完
         }
@@ -95,7 +96,7 @@ namespace MobaServer.MySql
             }
             catch (Exception e)
             {
-                Debug.LogError($"[MySqlEntity.ExecuteReader] {e.Message}");
+                MobaLogger.LogError($"[MySqlEntity.ExecuteReader] {e.Message}");
             }
             state = 1;
         }

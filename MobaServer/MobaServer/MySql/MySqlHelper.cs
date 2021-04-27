@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿using Moba.Utility;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +35,7 @@ namespace MobaServer.MySql
         private static MySqlEntity Connect(ConnectType connectType)
         {
             var poolCount = RecoveryPool.Count;
-            Debug.Log($"[MySqlHelper.Connect] {poolCount}");
+            MobaLogger.Log($"[MySqlHelper.Connect] {poolCount}");
 
             for (int i = poolCount; i > 0; i--)
             {

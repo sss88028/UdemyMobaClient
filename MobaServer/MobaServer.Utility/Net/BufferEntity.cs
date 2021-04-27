@@ -4,13 +4,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 
-namespace MobaServer.Net
+namespace Moba.Utility
 {
 	public class BufferEntity
 	{
-		#region public-field
-		#endregion public-field
-
 		#region public-property
 		public int RetryCount
 		{

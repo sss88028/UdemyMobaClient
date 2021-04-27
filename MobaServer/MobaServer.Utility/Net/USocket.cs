@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MobaServer.Net
+namespace Moba.Utility
 {
 	public class USocket
 	{
@@ -35,7 +35,7 @@ namespace MobaServer.Net
 			Socket = new UdpClient(Port);
 			Recevice();
 
-			Task.Run(Handle, _cancelToken.Token);
+			Task.Run((Action)Handle, _cancelToken.Token);
 		}
 
 		public async void Send(byte[] data, IPEndPoint endPoint) 
@@ -53,7 +53,7 @@ namespace MobaServer.Net
 				}
 				catch (Exception e)
 				{
-					Debug.LogError($"[USocket.Send] {e.Message}");
+					MobaLogger.LogError($"[USocket.Send] {e.Message}");
 					Close();
 				}
 			}
@@ -61,7 +61,7 @@ namespace MobaServer.Net
 
 		public void SendAck(BufferEntity ackPackage, IPEndPoint endPoint)
 		{
-			Debug.Log($"[USocket.SendAck] target sessionId : {ackPackage.SessionId}");
+			MobaLogger.Log($"[USocket.SendAck] target sessionId : {ackPackage.SessionId}");
 			Send(ackPackage.Buffer, endPoint);
 		}
 
@@ -92,20 +92,19 @@ namespace MobaServer.Net
 				try
 				{
 					var result = await Socket.ReceiveAsync();
-					Debug.Log("[USocket.Recevice] Get client message");
+					MobaLogger.Log("[USocket.Recevice] Get client message");
 					_awaitHandle.Enqueue(result);
 					Recevice();
 				}
 				catch (Exception e)
 				{
-					Debug.LogError($"[USocket.Recevice] {e.Message}");
+					MobaLogger.LogError($"[USocket.Recevice] {e.Message}");
 					Close();
 				}
 			}
 		}
 
-		//private void Handle()
-		private async Task Handle() 
+		private void Handle()
 		{
 			while (!_cancelToken.IsCancellationRequested)
 			{
@@ -123,7 +122,7 @@ namespace MobaServer.Net
 						bufferEntity.SessionId = _sessionId;
 
 						CreateUClient(bufferEntity);
-						Debug.Log($"[USocket.Handle] Create client sessionId : {_sessionId}");
+						MobaLogger.Log($"[USocket.Handle] Create client sessionId : {_sessionId}");
 					}
 
 					if (_clients.TryGetValue(bufferEntity.SessionId, out var targetClient))

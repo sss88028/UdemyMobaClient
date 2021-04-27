@@ -1,10 +1,12 @@
-﻿using MobaServer.MySql;
+﻿using Moba.Utility;
+using MobaServer.MySql;
 using MobaServer.Net;
 using MobaServer.Player;
 using ProtoMsg;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using BufferFactory = MobaServer.Net.BufferFactory;
 
 namespace MobaServer.GameModule
 {
@@ -39,7 +41,7 @@ namespace MobaServer.GameModule
 			s2cMsg.HeroID = c2sMsg.HeroID;
 			if (!PlayerManager.TryGetPlayerEntityBySessionId(request.SessionId, out var playerEntity))
 			{
-				Debug.LogError("[RoomModule.OnGetRoomSelectHeroC2S]");
+				MobaLogger.LogError("[RoomModule.OnGetRoomSelectHeroC2S]");
 			}
 			s2cMsg.RolesID = playerEntity.RolesInfo.RolesID;
 
@@ -55,7 +57,7 @@ namespace MobaServer.GameModule
 			s2cMsg.GridID = c2sMsg.GridID;
 			if (!PlayerManager.TryGetPlayerEntityBySessionId(request.SessionId, out var playerEntity))
 			{
-				Debug.LogError("[RoomModule.OnGetRoomSelectHeroSkillC2S]");
+				MobaLogger.LogError("[RoomModule.OnGetRoomSelectHeroSkillC2S]");
 			}
 			s2cMsg.RolesID = playerEntity.RolesInfo.RolesID;
 
@@ -72,7 +74,7 @@ namespace MobaServer.GameModule
 
 			if (!PlayerManager.TryGetPlayerEntityBySessionId(request.SessionId, out var playerEntity))
 			{
-				Debug.LogError("[RoomModule.OnGetRoomSelectHeroSkillC2S]");
+				MobaLogger.LogError("[RoomModule.OnGetRoomSelectHeroSkillC2S]");
 			}
 			s2cMsg.RolesID = playerEntity.RolesInfo.RolesID;
 
@@ -88,7 +90,7 @@ namespace MobaServer.GameModule
 			s2cMsg.HeroID = c2sMsg.HeroID;
 			if (!PlayerManager.TryGetPlayerEntityBySessionId(request.SessionId, out var playerEntity))
 			{
-				Debug.LogError("[RoomModule.OnGetRoomLockHeroC2S]");
+				MobaLogger.LogError("[RoomModule.OnGetRoomLockHeroC2S]");
 			}
 			s2cMsg.RolesID = playerEntity.RolesInfo.RolesID;
 
@@ -104,7 +106,7 @@ namespace MobaServer.GameModule
 			s2cMsg.IsBattleStart = false;
 			if (!PlayerManager.TryGetPlayerEntityBySessionId(request.SessionId, out var playerEntity))
 			{
-				Debug.LogError("[RoomModule.OnGetRoomLockHeroC2S]");
+				MobaLogger.LogError("[RoomModule.OnGetRoomLockHeroC2S]");
 			}
 
 			var isLoaded = playerEntity.RoomEntity.UpdateLoadProgress(playerEntity.RolesInfo.RolesID, c2sMsg.LoadProgress);
