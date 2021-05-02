@@ -22,34 +22,60 @@ namespace Game.UI
 		private InputField _passwordInput = null;
 
 		[SerializeField]
-		private Button _loginButton;
+		private UITaskButton _loginButton;
 		[SerializeField]
-		private Button _registerButton;
+		private UITaskButton _registerButton;
+
+		private CancellationTokenSource _buttonCancellation;
 		#endregion private-field
 
+		#region public-property
+		public string Account 
+		{
+			get 
+			{
+				if (_accountInput == null) 
+				{
+					return string.Empty;
+				}
+				return _accountInput.text;
+			}
+		}
+		
+		public string Password
+		{
+			get
+			{
+				if (_passwordInput == null)
+				{
+					return string.Empty;
+				}
+				return _passwordInput.text;
+			}
+		}
+		#endregion public-property
+
 		#region public-method
-		public static async Task<Func<bool>> Open(CancellationToken ct) 
+		public static async Task<LoginUIViewer> GetInstance()
 		{
 			var instance = await GetInstance(_sceneName);
-			return await instance.OpenInternal(ct);
+			return instance;
 		}
 
-		public static async void Close()
-		{
-			var instance = await GetInstance(_sceneName);
-			instance.CloseInternal();
-		}
-		#endregion public-method
-
-		#region MonoBehaviour-method
-		#endregion MonoBehaviour-method
-
-		#region private-method
-		private async Task<Func<bool>> OpenInternal(CancellationToken ct) 
+		public async void Open()
 		{
 			gameObject.SetActive(true);
+		}
 
-			var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+		public async void Close()
+		{
+			gameObject.SetActive(false);
+			TaskUtil.CancelToken(ref _buttonCancellation);
+		}
+
+		public async Task<InputType> GetLoginType()
+		{
+			var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(TaskUtil.RefreshToken(ref _buttonCancellation));
 			try
 			{
 				var linkedCt = linkedCts.Token;
@@ -58,78 +84,42 @@ namespace Game.UI
 
 				await finishedTask;
 				linkedCts.Cancel();
+				var selectedButton = buttonTask.Result;
 
-				Func<bool> act = null;
-				if (buttonTask.Result == _loginButton)
+				var result = default(InputType);
+				if (selectedButton == _loginButton.Button)
 				{
-					act = OnLoginButtonClick;
+					result = InputType.Login;
 				}
-				else if (buttonTask.Result == _registerButton)
+				else if (selectedButton == _registerButton.Button)
 				{
-					act = OnRegisterButtonClick;
+					result = InputType.Register;
 				}
 
-				return act;
+				return result;
+			}
+			catch (AggregateException e)
+			{
+				return InputType.Cancel;
 			}
 			finally
 			{
 				linkedCts.Dispose();
 			}
 		}
+		#endregion public-method
 
-		private void CloseInternal()
+		#region MonoBehaviour-method
+		protected override void OnDestroy()
 		{
-			gameObject.SetActive(false);
+			if (_instance == null || _instance != this)
+			{
+				return;
+			}
+			_instance = null;
+
+			TaskUtil.CancelToken(ref _buttonCancellation);
 		}
-
-		private bool OnRegisterButtonClick()
-		{
-			if (string.IsNullOrEmpty(_accountInput.text))
-			{
-				Debug.Log($"[LoginUIViewer.OnRegisterButtonClick] Account is Empty");
-				return false;
-			}
-
-			if (string.IsNullOrEmpty(_passwordInput.text))
-			{
-				Debug.Log($"[LoginUIViewer.OnRegisterButtonClick] Password is Empty");
-				return false;
-			}
-
-			var c2sMSG = new UserRegisterC2S();
-			var userInfo = new UserInfo();
-			userInfo.Account = _accountInput.text;
-			userInfo.Password = _passwordInput.text;
-			c2sMSG.UserInfo = userInfo;
-
-			BufferFactory.CreateAndSendPackage(1000, c2sMSG);
-			return true;
-		}
-
-		private bool OnLoginButtonClick()
-		{
-			if (string.IsNullOrEmpty(_accountInput.text))
-			{
-				Debug.Log($"[LoginUIViewer.OnRegisterButtonClick] Account is Empty");
-				return false;
-			}
-
-			if (string.IsNullOrEmpty(_passwordInput.text))
-			{
-				Debug.Log($"[LoginUIViewer.OnRegisterButtonClick] Password is Empty");
-				return false;
-			}
-
-
-			var c2sMSG = new UserLoginC2S();
-			var userInfo = new UserInfo();
-			userInfo.Account = _accountInput.text;
-			userInfo.Password = _passwordInput.text;
-			c2sMSG.UserInfo = userInfo;
-
-			BufferFactory.CreateAndSendPackage(1001, c2sMSG);
-			return true;
-		}
-		#endregion private-method
+		#endregion MonoBehaviour-method
 	}
 }

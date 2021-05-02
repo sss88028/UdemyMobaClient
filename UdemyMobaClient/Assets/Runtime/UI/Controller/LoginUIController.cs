@@ -5,6 +5,7 @@ using ProtoMsg;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Game.UI
@@ -13,15 +14,10 @@ namespace Game.UI
 	{
 		public enum InputType
 		{
+			Undefine,
+			Cancel,
 			Login,
 			Register,
-		}
-
-		public struct LoginInfo
-		{
-			public InputType InputType;
-			public string Account;
-			public string Password;
 		}
 
 		#region private-field
@@ -33,29 +29,25 @@ namespace Game.UI
 		public LoginUIController()
 		{
 		}
-		
+
 		public async void OpenUI()
 		{
-			if (_cancelToken != null)
-			{
-				_cancelToken.Cancel();
-				_cancelToken.Dispose();
-			}
-			_cancelToken = new CancellationTokenSource();
-
 			AddEventListener();
+			var viewer = await LoginUIViewer.GetInstance();
+			viewer.Open();
 
-			var result = (await LoginUIViewer.Open(_cancelToken.Token))();
-			while (!result)
-			{
-				result = (await LoginUIViewer.Open(_cancelToken.Token))();
+			while (!(await HandleLogin(viewer)))
+			{ 
 			}
 		}
 
-		public void CloseUI() 
+		public async void CloseUI() 
 		{
 			RemoveEventListener();
-			LoginUIViewer.Close();
+
+			TaskUtil.CancelToken(ref _cancelToken);
+			var viewer = await LoginUIViewer.GetInstance();
+			viewer.Close();
 		}
 
 		public void SaveRolesInfo(RolesInfo rolesInfo) 
@@ -85,6 +77,56 @@ namespace Game.UI
 			_isEventAdded = true;
 			NetEvent.Instance.RemoveEventListener(1000, OnGetUserRegisterS2C);
 			NetEvent.Instance.RemoveEventListener(1001, OnGetUserLoginS2C);
+		}
+
+		private async Task<bool> HandleLogin(LoginUIViewer viewer)
+		{
+			var loginType = await viewer.GetLoginType();
+
+			if (string.IsNullOrEmpty(viewer.Account))
+			{
+				Debug.Log($"[LoginUIViewer.HandleLogin] Account is Empty");
+				return false;
+			}
+
+			if (string.IsNullOrEmpty(viewer.Password))
+			{
+				Debug.Log($"[LoginUIViewer.HandleLogin] Password is Empty");
+				return false;
+			}
+
+			var c2sMSG = default(IMessage);
+			var messageId = default(int);
+			switch (loginType)
+			{
+				case InputType.Login:
+					{
+						c2sMSG = new UserLoginC2S();
+						var userInfo = new UserInfo();
+						userInfo.Account = viewer.Account;
+						userInfo.Password = viewer.Password;
+						((UserLoginC2S)c2sMSG).UserInfo = userInfo;
+						messageId = 1001;
+					}
+					break;
+				case InputType.Register:
+					{
+						c2sMSG = new UserRegisterC2S();
+						var userInfo = new UserInfo();
+						userInfo.Account = viewer.Account;
+						userInfo.Password = viewer.Password;
+						((UserRegisterC2S)c2sMSG).UserInfo = userInfo;
+						messageId = 1002;
+					}
+					break;
+				default:
+					{
+						return true;
+					}
+			}
+
+			BufferFactory.CreateAndSendPackage(messageId, c2sMSG);
+			return true;
 		}
 
 		private async void OnGetUserRegisterS2C(BufferEntity buffer) 
@@ -120,8 +162,6 @@ namespace Game.UI
 				//success
 				case 0:
 					{
-						CloseUI();
-
 						if (s2cMSG.RolesInfo != null)
 						{
 							SaveRolesInfo(s2cMSG.RolesInfo);

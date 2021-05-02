@@ -11,7 +11,7 @@ namespace Game.UI
     public abstract class BaseUIViewer<T> : MonoBehaviour where T : BaseUIViewer<T>
 	{
 		#region private-method
-		private static T _instance;
+		protected static T _instance;
 		#endregion private-method
 
 		#region protected-method
