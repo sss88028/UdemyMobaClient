@@ -31,6 +31,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Google.Protobuf, Version=3.6.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libs\Google.Protobuf.dll</HintPath>
+    </Reference>
+    <Reference Include="LitJson, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libs\LitJson.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -43,7 +51,26 @@
   <ItemGroup>
     <Compile Include="Dispatcher\EventBase.cs" />
     <Compile Include="Dispatcher\NetEvent.cs" />
+    <Compile Include="Helper\JsonHelper.cs" />
+    <Compile Include="Helper\TimeHelper.cs" />
+    <Compile Include="Logger\ILogger.cs" />
+    <Compile Include="Logger\MobaLogger.cs" />
+    <Compile Include="Net\BufferEntity.cs" />
+    <Compile Include="Net\BufferFactory.cs" />
+    <Compile Include="Net\ProtobufHelper.cs" />
+    <Compile Include="Net\UClient.cs" />
+    <Compile Include="Net\USocket.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProtobufData\BattlePB.cs" />
+    <Compile Include="ProtobufData\LobbyPB.cs" />
+    <Compile Include="ProtobufData\RolesPB.cs" />
+    <Compile Include="ProtobufData\RoomPB.cs" />
+    <Compile Include="ProtobufData\RootPB.cs" />
+    <Compile Include="ProtobufData\UserPB.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="libs\Google.Protobuf.dll" />
+    <Content Include="libs\LitJson.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

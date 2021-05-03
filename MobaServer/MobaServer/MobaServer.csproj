@@ -64,28 +64,15 @@
     <Compile Include="GameModule\RolesModule.cs" />
     <Compile Include="GameModule\RoomModule.cs" />
     <Compile Include="GameModule\UserModule.cs" />
-    <Compile Include="Helper\JsonHelper.cs" />
-    <Compile Include="Helper\TimeHelper.cs" />
-    <Compile Include="Logger\Debug.cs" />
     <Compile Include="Match\MatchEntity.cs" />
     <Compile Include="Match\MatchManager.cs" />
     <Compile Include="MySql\MySqlCMD.cs" />
     <Compile Include="MySql\MySqlEntity.cs" />
     <Compile Include="MySql\MySqlHelper.cs" />
-    <Compile Include="Net\BufferEntity.cs" />
     <Compile Include="Net\BufferFactory.cs" />
-    <Compile Include="Net\ProtobufHelper.cs" />
-    <Compile Include="Net\UClient.cs" />
-    <Compile Include="Net\USocket.cs" />
     <Compile Include="Player\PlayerEntity.cs" />
     <Compile Include="Player\PlayerManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ProtobufData\BattlePB.cs" />
-    <Compile Include="ProtobufData\LobbyPB.cs" />
-    <Compile Include="ProtobufData\RolesPB.cs" />
-    <Compile Include="ProtobufData\RoomPB.cs" />
-    <Compile Include="ProtobufData\RootPB.cs" />
-    <Compile Include="ProtobufData\UserPB.cs" />
     <Compile Include="Room\RoomEntity.cs" />
     <Compile Include="Room\RoomManager.cs" />
     <Compile Include="Singleton.cs" />
@@ -94,14 +81,12 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="libs\Google.Protobuf.dll" />
-    <Content Include="libs\LitJson.dll" />
     <Content Include="libs\MySql.Data.dll" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MobaServer.Utility\MobaServer.Utility.csproj">
+    <ProjectReference Include="..\MobaServer.Utility\Moba.Utility.csproj">
       <Project>{b2011e44-8d4c-477f-bd48-454c1a13ac01}</Project>
-      <Name>MobaServer.Utility</Name>
+      <Name>Moba.Utility</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
