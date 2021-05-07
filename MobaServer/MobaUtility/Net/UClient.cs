@@ -7,11 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-<<<<<<< HEAD:MobaServer/MobaServer.Utility/Net/UClient.cs
-namespace Moba.Utility
-=======
 namespace Moba.Utility.Net
->>>>>>> e621aef ([Server] Change server hierarchy):MobaServer/MobaUtility/Net/UClient.cs
 {
 	public class UClient
 	{
@@ -34,12 +30,8 @@ namespace Moba.Utility.Net
 			get;
 			private set;
 		}
-
-<<<<<<< HEAD:MobaServer/MobaServer.Utility/Net/UClient.cs
-		public USocket USocket
-=======
+		
 		public ISocket Socket 
->>>>>>> e621aef ([Server] Change server hierarchy):MobaServer/MobaUtility/Net/UClient.cs
 		{ 
 			get;
 			private set;
@@ -87,11 +79,7 @@ namespace Moba.Utility.Net
 				case 1:
 					{
 						var ack = new BufferEntity(buffer);
-<<<<<<< HEAD:MobaServer/MobaServer.Utility/Net/UClient.cs
-						USocket.SendAck(ack, EndPoint);
-=======
 						Socket.SendAck(ack, EndPoint);
->>>>>>> e621aef ([Server] Change server hierarchy):MobaServer/MobaUtility/Net/UClient.cs
 						MobaLogger.Log($"[UClient.Handle] get SN : {buffer.SN}");
 						HandleLoginPackage(buffer);
 					}
@@ -164,11 +152,7 @@ namespace Moba.Utility.Net
 				if (package.RetryCount >= _disconnectCount)
 				{
 					MobaLogger.LogError($"[UClient.CheckTimeOut] {SessionId} timeout");
-<<<<<<< HEAD:MobaServer/MobaServer.Utility/Net/UClient.cs
-					USocket.RemoveClient(SessionId);
-=======
 					Socket.OnClientDisconnect(this);
->>>>>>> e621aef ([Server] Change server hierarchy):MobaServer/MobaUtility/Net/UClient.cs
 					return;
 				}
 
