@@ -1,12 +1,11 @@
 ﻿using Moba.Utility;
+using Moba.Utility.Net;
 using MobaServer.MySql;
-using MobaServer.Net;
 using MobaServer.Player;
 using ProtoMsg;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using BufferFactory = MobaServer.Net.BufferFactory;
 
 namespace MobaServer.GameModule
 {
@@ -113,7 +112,7 @@ namespace MobaServer.GameModule
 			if (!isLoaded) 
 			{
 				playerEntity.RoomEntity.GetLoadingProgress(ref s2cMsg);
-				BufferFactory.CreateAndSendPackage(request, s2cMsg);
+				BufferFactory.CreateAndSendPackage(GameManager.USocket, request, s2cMsg);
 			}
 		}
 		#endregion private-method

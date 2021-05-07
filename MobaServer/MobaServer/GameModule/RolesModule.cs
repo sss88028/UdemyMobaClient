@@ -1,6 +1,6 @@
 ﻿using Moba.Utility;
+using Moba.Utility.Net;
 using MobaServer.MySql;
-using MobaServer.Net;
 using MobaServer.Player;
 using ProtoMsg;
 using System;
@@ -60,7 +60,7 @@ namespace MobaServer.GameModule
 			{
 				s2cMSG.Result = 1;
 			}
-			BufferFactory.CreateAndSendPackage(request, s2cMSG);
+			BufferFactory.CreateAndSendPackage(GameManager.USocket, request, s2cMSG);
 		}
 		#endregion private-method
 	}

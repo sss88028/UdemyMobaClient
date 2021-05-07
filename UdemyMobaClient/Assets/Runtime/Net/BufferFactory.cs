@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf;
+using Moba.Utility.Net;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,21 +8,10 @@ namespace Game.Net
 {
     public class BufferFactory
     {
-        private enum MessageType 
-        { 
-            Ack = 0,
-            Login = 1,
-        }
-
         #region public-method
         public static BufferEntity CreateAndSendPackage(int messageId, IMessage message) 
         {
-            Debug.Log($"[BufferFactory.CreateAndSendPackage] message Id : {messageId} \n message : {JsonHelper.SerializeObject(message)}");
-
-            var data = ProtobufHelper.ToBytes(message);
-            var buffer = new BufferEntity(USocket.ClientAgent.EndPoint, USocket.ClientAgent.SessionId, 0, 0, (int)MessageType.Login, messageId, data);
-            USocket.ClientAgent.Send(buffer);
-            return buffer;
+			return Moba.Utility.Net.BufferFactory.CreateAndSendPackage(ClientSocket.ClientAgent, messageId, message);
         }
 		#endregion public-method
 	}

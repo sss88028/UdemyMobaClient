@@ -4,6 +4,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using Unity.PerformanceTesting;
+using Moba.Utility.Net;
 
 namespace Game.Net.Tests
 {

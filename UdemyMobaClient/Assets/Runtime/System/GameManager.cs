@@ -1,5 +1,7 @@
 ﻿using CCTU.GameDevTools.MonoSingleton;
 using Game.Net;
+using Moba.Utility;
+using Moba.Utility.Net;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,13 +11,13 @@ namespace Game.MainSystem
 	public class GameManager : MonoSingleton<GameManager>
 	{
 		#region private-field
-		private static USocket _uSocket;
+		private static ClientSocket _uSocket;
 		#endregion private-field
 
 		#region MonoBehaviour-method
 		private void Start()
 		{
-			_uSocket = new USocket(DispatcNetHandler);
+			_uSocket = new ClientSocket(DispatcNetHandler);
 		}
 
 		private void Update()

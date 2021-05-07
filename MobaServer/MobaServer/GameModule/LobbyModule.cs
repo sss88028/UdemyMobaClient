@@ -1,6 +1,6 @@
 ﻿using Moba.Utility;
+using Moba.Utility.Net;
 using MobaServer.Match;
-using MobaServer.Net;
 using MobaServer.Player;
 using ProtoMsg;
 using System;
@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BufferFactory = MobaServer.Net.BufferFactory;
 
 namespace MobaServer.GameModule
 {
@@ -47,7 +46,8 @@ namespace MobaServer.GameModule
 			matchEntity.PlayerEntity.Add(playerEntity);
 			playerEntity.MatchEntity = matchEntity;
 
-			BufferFactory.CreateAndSendPackage(request, s2cMSG);
+			
+			BufferFactory.CreateAndSendPackage(GameManager.USocket, request, s2cMSG);
 		}
 
 		private void OnGetLobbyQuitMatchC2S(BufferEntity request)
@@ -71,7 +71,7 @@ namespace MobaServer.GameModule
 			{
 				s2cMSG.Result = 1;
 			}
-			BufferFactory.CreateAndSendPackage(request, s2cMSG);
+			BufferFactory.CreateAndSendPackage(GameManager.USocket, request, s2cMSG);
 		}
 		#endregion private-method
 	}

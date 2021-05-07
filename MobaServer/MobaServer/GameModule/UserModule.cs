@@ -1,12 +1,11 @@
 ﻿using Moba.Utility;
+using Moba.Utility.Net;
 using MobaServer.MySql;
-using MobaServer.Net;
 using MobaServer.Player;
 using ProtoMsg;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using BufferFactory = MobaServer.Net.BufferFactory;
 
 namespace MobaServer.GameModule
 {
@@ -51,7 +50,7 @@ namespace MobaServer.GameModule
 				}
 			}
 
-			BufferFactory.CreateAndSendPackage(request, s2cMSG);
+			BufferFactory.CreateAndSendPackage(GameManager.USocket, request, s2cMSG);
 		}
 
 		private void OnGetUserLoginC2S(BufferEntity request)
@@ -86,7 +85,7 @@ namespace MobaServer.GameModule
 				s2cMSG.Result = 2;
 			}
 
-			BufferFactory.CreateAndSendPackage(request, s2cMSG);
+			BufferFactory.CreateAndSendPackage(GameManager.USocket, request, s2cMSG);
 		}
 		#endregion private-method
 	}

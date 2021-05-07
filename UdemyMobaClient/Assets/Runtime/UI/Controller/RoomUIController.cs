@@ -1,5 +1,7 @@
 ﻿using Game.Model;
 using Game.Net;
+using Moba.Utility;
+using Moba.Utility.Net;
 using ProtoMsg;
 using System;
 using System.Collections;
@@ -135,7 +137,7 @@ namespace Game.UI
 
 		private void OnSelectHeroHandler(int heroId) 
 		{
-			BufferFactory.CreateAndSendPackage(1400, new RoomSelectHeroC2S()
+			Net.BufferFactory.CreateAndSendPackage(1400, new RoomSelectHeroC2S()
 			{
 				HeroID = heroId,
 			});
@@ -149,7 +151,7 @@ namespace Game.UI
 				return;
 			}
 
-			BufferFactory.CreateAndSendPackage(1405, new RoomLockHeroC2S()
+			Net.BufferFactory.CreateAndSendPackage(1405, new RoomLockHeroC2S()
 			{
 				HeroID = _heroId,
 			});
@@ -157,7 +159,7 @@ namespace Game.UI
 
 		private void OnSetSkillHandler(int gridId, int skillId)
 		{
-			BufferFactory.CreateAndSendPackage(1401, new RoomSelectHeroSkillC2S()
+			Net.BufferFactory.CreateAndSendPackage(1401, new RoomSelectHeroSkillC2S()
 			{
 				SkillID = skillId,
 				GridID = gridId,

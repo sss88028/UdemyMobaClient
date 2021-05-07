@@ -79,7 +79,7 @@ namespace MobaServer.MySql
             catch (Exception e)
             {
                 Result = false;
-                MobaLogger.LogError($"[MySqlEntity.ExecuteNonQuery] {e.Message}");
+				MobaLogger.LogError($"[MySqlEntity.ExecuteNonQuery] {e.Message}");
             }
             state = 1;//已经工作完
         }
@@ -96,7 +96,7 @@ namespace MobaServer.MySql
             }
             catch (Exception e)
             {
-                MobaLogger.LogError($"[MySqlEntity.ExecuteReader] {e.Message}");
+				MobaLogger.LogError($"[MySqlEntity.ExecuteReader] {e.Message}");
             }
             state = 1;
         }

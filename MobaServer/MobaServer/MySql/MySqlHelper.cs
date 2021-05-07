@@ -35,7 +35,7 @@ namespace MobaServer.MySql
         private static MySqlEntity Connect(ConnectType connectType)
         {
             var poolCount = RecoveryPool.Count;
-            MobaLogger.Log($"[MySqlHelper.Connect] {poolCount}");
+			MobaLogger.Log($"[MySqlHelper.Connect] {poolCount}");
 
             for (int i = poolCount; i > 0; i--)
             {

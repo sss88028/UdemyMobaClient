@@ -1,5 +1,7 @@
 ﻿using Game.Model;
 using Game.Net;
+using Moba.Utility;
+using Moba.Utility.Net;
 using ProtoMsg;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,7 +42,7 @@ namespace Game.UI
 			var msg = new RolesCreateC2S();
 			msg.NickName = rolesName;
 
-			BufferFactory.CreateAndSendPackage(1201, msg);
+			Net.BufferFactory.CreateAndSendPackage(1201, msg);
 		}
 
 		public void CloseUI()
