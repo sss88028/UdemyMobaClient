@@ -17,11 +17,11 @@ namespace Game.UI
 		[SerializeField]
 		private Text _hintText;
 		[SerializeField]
-		private Button _buttonAccept;
+		private UITaskButton _buttonAccept;
 		[SerializeField]
-		private Button _buttonCancel;
+		private UITaskButton _buttonCancel;
 		[SerializeField]
-		private Button _buttonClose;
+		private UITaskButton _buttonClose;
 		#endregion private-field
 
 		#region public-method

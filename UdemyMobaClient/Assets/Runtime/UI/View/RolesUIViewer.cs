@@ -17,7 +17,7 @@ namespace Game.UI
 		[SerializeField]
 		private InputField _nameField = null;
 		[SerializeField]
-		private Button _submitButton;
+		private UITaskButton _submitButton;
 		#endregion private-field
 
 		#region public-method

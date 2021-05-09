@@ -36,26 +36,22 @@ namespace Game.UI
 		
 		public async void OpenUI()
 		{
-			if (_cancelToken != null)
-			{
-				_cancelToken.Cancel();
-				_cancelToken.Dispose();
-			}
-			_cancelToken = new CancellationTokenSource();
-
 			AddEventListener();
-
-			var result = (await LoginUIViewer.Open(_cancelToken.Token))();
-			while (!result)
+			var instance = await LoginUIViewer.GetInstance();
+			instance.Open();
+			var buttonEvent = await instance.GetButtonEvent(TaskUtility.RefreshToken(ref _cancelToken));
+			while (!HandleButtonEvent(instance, buttonEvent)) 
 			{
-				result = (await LoginUIViewer.Open(_cancelToken.Token))();
+				buttonEvent = await instance.GetButtonEvent(TaskUtility.RefreshToken(ref _cancelToken));
 			}
 		}
 
-		public void CloseUI() 
+		public async void CloseUI()
 		{
+			TaskUtility.CancelToken(ref _cancelToken);
 			RemoveEventListener();
-			LoginUIViewer.Close();
+			var instance = await LoginUIViewer.GetInstance();
+			instance.Close();
 		}
 
 		public void SaveRolesInfo(RolesInfo rolesInfo) 
@@ -85,6 +81,70 @@ namespace Game.UI
 			_isEventAdded = true;
 			NetEvent.Instance.RemoveEventListener(1000, OnGetUserRegisterS2C);
 			NetEvent.Instance.RemoveEventListener(1001, OnGetUserLoginS2C);
+		}
+
+		private bool HandleButtonEvent(LoginUIViewer loginviwer, LoginUIViewer.ButtonEvent buttonEvent) 
+		{
+			switch (buttonEvent)
+			{
+				case LoginUIViewer.ButtonEvent.Login:
+					return HandleLogin(loginviwer);
+				case LoginUIViewer.ButtonEvent.Register:
+					return HandleRegister(loginviwer);
+			}
+			return false;
+		}
+
+		private bool HandleLogin(LoginUIViewer loginviwer)
+		{
+			var account = loginviwer.GetAccount();
+			if (string.IsNullOrEmpty(account))
+			{
+				Debug.Log($"[LoginUIController.HandleLogin] Account is Empty");
+				return false;
+			}
+
+			var password = loginviwer.GetPassword();
+			if (string.IsNullOrEmpty(loginviwer.GetPassword()))
+			{
+				Debug.Log($"[LoginUIController.HandleLogin] Password is Empty");
+				return false;
+			}
+
+			var c2sMSG = new UserLoginC2S();
+			var userInfo = new UserInfo();
+			userInfo.Account = account;
+			userInfo.Password = password;
+			c2sMSG.UserInfo = userInfo;
+
+			BufferFactory.CreateAndSendPackage(1001, c2sMSG);
+			return true;
+		}
+
+		private bool HandleRegister(LoginUIViewer loginviwer)
+		{
+			var account = loginviwer.GetAccount();
+			if (string.IsNullOrEmpty(account))
+			{
+				Debug.Log($"[LoginUIController.HandleRegister] Account is Empty");
+				return false;
+			}
+
+			var password = loginviwer.GetPassword();
+			if (string.IsNullOrEmpty(loginviwer.GetPassword()))
+			{
+				Debug.Log($"[LoginUIController.HandleRegister] Password is Empty");
+				return false;
+			}
+
+			var c2sMSG = new UserRegisterC2S();
+			var userInfo = new UserInfo();
+			userInfo.Account = account;
+			userInfo.Password = password;
+			c2sMSG.UserInfo = userInfo;
+
+			BufferFactory.CreateAndSendPackage(1000, c2sMSG);
+			return true;
 		}
 
 		private async void OnGetUserRegisterS2C(BufferEntity buffer) 

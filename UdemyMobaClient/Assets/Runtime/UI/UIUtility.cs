@@ -11,7 +11,7 @@ namespace Game.UI
 	public static class UIUtility
 	{
 		#region public-method
-		public static async Task<Button> SelectButton(CancellationToken ct, params Button[] buttons)
+		public static async Task<UITaskButton> SelectButton(CancellationToken ct, params UITaskButton[] buttons)
 		{
 			var tasks = buttons.Select(PressButton);
 			var finishedTasks = await Task.WhenAny(tasks); ;
@@ -21,12 +21,11 @@ namespace Game.UI
 
 		#region private-method
 
-		private static async Task<Button> PressButton(Button button)
+		private static async Task<UITaskButton> PressButton(UITaskButton button)
 		{
-			bool isPress = false;
-			button.onClick.AddListener(() => isPress = true);
+			button.Clear();
 
-			while (!isPress)
+			while (!button.IsSelected)
 			{
 				await Task.Yield();
 			}
