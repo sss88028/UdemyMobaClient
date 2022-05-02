@@ -3,30 +3,54 @@ using Game.Net;
 using ProtoMsg;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 namespace Game.UI
 {
     public class RolesUIController : Singleton<RolesUIController>
 	{
+		#region private-field
+		private CancellationTokenSource _cancelToken;
+		#endregion private-field
+
 		#region public-method
 		public RolesUIController()
 		{
 		}
-
-		public void Load()
+		
+		public async void OpenUI()
 		{
-			RolesUIViewer.LoadScene();
-		}
+			if (_cancelToken != null)
+			{
+				_cancelToken.Cancel();
+				_cancelToken.Dispose();
+			}
+			_cancelToken = new CancellationTokenSource();
 
-		public void OpenUI()
-		{
-			RolesUIViewer.Open();
 			NetEvent.Instance.AddEventListener(1201, OnGetRolesCreateS2C);
+
+			string rolesName = string.Empty;
+
+			while (string.IsNullOrEmpty(rolesName))
+			{
+				rolesName = await RolesUIViewer.Open(_cancelToken.Token);
+			}
+
+			var msg = new RolesCreateC2S();
+			msg.NickName = rolesName;
+
+			BufferFactory.CreateAndSendPackage(1201, msg);
 		}
 
 		public void CloseUI()
 		{
+			if (_cancelToken != null)
+			{
+				_cancelToken.Cancel();
+				_cancelToken.Dispose();
+			}
+
 			NetEvent.Instance.RemoveEventListener(1201, OnGetRolesCreateS2C);
 			RolesUIViewer.Close();
 		}

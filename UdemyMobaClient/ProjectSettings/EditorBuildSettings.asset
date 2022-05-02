@@ -11,19 +11,21 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Empty.unity
     guid: 4ab535bc4f95b604daadc5d9fd7d13a7
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/UIs/LoginUI.unity
     guid: 2d5664eab45fb6445863f556b98ed398
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/UIs/LobbyUI.unity
     guid: effdc8ecb714d854d80249f84c3cbf5d
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/UIs/RoomUI.unity
     guid: 7f59de249feaa7349bf9fe510e26fde6
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/UIs/TipUI.unity
     guid: 4c2357e28edf5c244b4059cd23463dab
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/UIs/RolesUI.unity
     guid: bfd3dc6f03ce0ea45a0e75f11e01d741
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: b0b1f45bcabc1d2488ddcb9c67a08d4d,
+      type: 2}

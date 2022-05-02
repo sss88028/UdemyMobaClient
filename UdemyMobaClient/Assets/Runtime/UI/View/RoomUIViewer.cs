@@ -16,9 +16,7 @@ namespace Game.UI
 		#endregion public-field
 
 		#region private-field
-		private static string _sceneName = "RoomUI";
-		private static bool _isOpen = false;
-
+		private static string _sceneName = "UI/RoomUI.unity";
 		private static IEnumerable<RolesInfo> _teamARolesInfos;
 		private static IEnumerable<RolesInfo> _teamBRolesInfos;
 
@@ -48,41 +46,30 @@ namespace Game.UI
 		#endregion private-property
 
 		#region public-method
-		public static void Open()
+		public static async void Open()
 		{
-			_isOpen = true;
-			if (_instance == null)
-			{
-				LoadScene(_sceneName);
-			}
-			else
-			{
-				_instance.ActiveInternal();
-			}
+			var instance = await GetInstance(_sceneName);
+			instance.ActiveInternal(true);
 		}
 
-		public static void Close()
+		public static async void Close()
 		{
-			_isOpen = false;
-
-			_instance?.ActiveInternal();
+			var instance = await GetInstance(_sceneName);
+			instance.ActiveInternal(false);
 		}
 
-		public static void CreateTeamInfo(RoomInfo roomInfo) 
+		public static async void CreateTeamInfo(RoomInfo roomInfo) 
 		{
 			_teamARolesInfos = roomInfo.TeamA;
 			_teamBRolesInfos = roomInfo.TeamB;
-
-			_instance?.CreateTeamInternal();
+			(await GetInstance(_sceneName)).CreateTeamInternal();
 		}
 
-		public static void SetHeroInfo(int rolesId, int heroId)
+		public static async void SetHeroInfo(int rolesId, int heroId)
 		{
-			if (_instance != null) 
-			{
-				_instance._leftTemList.SetHeroInfo(rolesId, heroId);
-				_instance._rightTemList.SetHeroInfo(rolesId, heroId);
-			}
+			var instance = await GetInstance(_sceneName);
+			instance._leftTemList.SetHeroInfo(rolesId, heroId);
+			instance._rightTemList.SetHeroInfo(rolesId, heroId);
 		}
 
 		public static void SetHeroSkill(int rolesId, int gridId, int skillId)
@@ -105,15 +92,14 @@ namespace Game.UI
 		private void Start()
 		{
 			SetUpEvent();
-			ActiveInternal();
 			CreateTeamInternal();
 		}
 		#endregion MonoBehaviour-method
 
 		#region private-method
-		private void ActiveInternal()
+		private void ActiveInternal(bool isOpen)
 		{
-			gameObject.SetActive(_isOpen);
+			gameObject.SetActive(isOpen);
 		}
 
 		private void CreateTeamInternal() 

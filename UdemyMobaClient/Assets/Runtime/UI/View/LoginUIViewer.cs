@@ -1,122 +1,112 @@
-﻿using Game.Net;
+﻿using CCTU.UIFramework;
+using Game.Model;
+using Game.Net;
 using ProtoMsg;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Game.UI
 {
-    public class LoginUIViewer : BaseUIViewer<LoginUIViewer>
+	public interface ILoginInfoProvider 
 	{
+		string Account 
+		{
+			get;
+		}
+
+		string Password
+		{
+			get;
+		}
+	}
+
+    public class LoginUIViewer : UIViewerBase<LoginUIViewer>, ILoginInfoProvider
+	{
+		public enum ButtonEvent 
+		{ 
+			ForceCancel = -2,
+			Unknown = -1,
+			Login,
+			Register,
+		}
+
 		#region private-field
-		private static string _sceneName = "LoginUI";
-		private static bool _isOpen = false;
 
 		[SerializeField]
 		private InputField _accountInput = null;
 		[SerializeField]
 		private InputField _passwordInput = null;
+
+		[SerializeField]
+		private UITaskButton _loginButton;
+		[SerializeField]
+		private UITaskButton _registerButton;
+
+		private CancellationTokenSource _buttonCts;
+
+		public string Account => _accountInput.text;
+
+		public string Password => _passwordInput.text;
 		#endregion private-field
 
 		#region public-method
-		public static void Open() 
+		public override Task OnEnter()
 		{
-			_isOpen = true;
-			if (_instance == null)
-			{
-				LoadScene(_sceneName);
-			}
-			else 
-			{
-				_instance.OpenInternal();
-			}
+			gameObject.SetActive(true);
+			return base.OnEnter();
 		}
 
-		public static void Close()
+		public override Task OnExit()
 		{
-			_isOpen = false;
-
-			_instance?.CloseInternal();
+			gameObject.SetActive(false);
+			return base.OnExit();
 		}
 
-		public static void LoadScene()
+		public async Task<ButtonEvent> GetButtonEvent(CancellationToken ct)
 		{
-			LoadScene(_sceneName);
-		}
+			TaskUtility.CancelToken(ref _buttonCts);
 
-		public void OnRegisterButtonClick() 
-		{
-			if (string.IsNullOrEmpty(_accountInput.text)) 
+			_buttonCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+			try
 			{
-				Debug.Log($"[LoginUIViewer.OnRegisterButtonClick] Account is Empty");
-				return;
-			}
+				var linkedCt = _buttonCts.Token;
+				var buttonTask = UIUtility.SelectButton(linkedCt, _loginButton, _registerButton);
+				var finishedTask = await Task.WhenAny(buttonTask);
 
-			if (string.IsNullOrEmpty(_passwordInput.text))
+				await finishedTask;
+
+				if (buttonTask.Result == _loginButton)
+				{
+					return ButtonEvent.Login;
+				}
+				else if (buttonTask.Result == _registerButton)
+				{
+					return ButtonEvent.Register;
+				}
+
+				return ButtonEvent.Unknown;
+			}
+			catch (ArgumentException e) 
 			{
-				Debug.Log($"[LoginUIViewer.OnRegisterButtonClick] Password is Empty");
-				return;
+				return ButtonEvent.ForceCancel;
 			}
-
-			var c2sMSG = new UserRegisterC2S();
-			var userInfo = new UserInfo();
-			userInfo.Account = _accountInput.text;
-			userInfo.Password = _passwordInput.text;
-			c2sMSG.UserInfo = userInfo;
-
-			BufferFactory.CreateAndSendPackage(1000, c2sMSG);
-		}
-
-		public void OnLoginButtonClick()
-		{
-			if (string.IsNullOrEmpty(_accountInput.text))
+			finally
 			{
-				Debug.Log($"[LoginUIViewer.OnRegisterButtonClick] Account is Empty");
-				return;
+				TaskUtility.CancelToken(ref _buttonCts);
 			}
-
-			if (string.IsNullOrEmpty(_passwordInput.text))
-			{
-				Debug.Log($"[LoginUIViewer.OnRegisterButtonClick] Password is Empty");
-				return;
-			}
-			
-
-			var c2sMSG = new UserLoginC2S();
-			var userInfo = new UserInfo();
-			userInfo.Account = _accountInput.text;
-			userInfo.Password = _passwordInput.text;
-			c2sMSG.UserInfo = userInfo;
-
-			BufferFactory.CreateAndSendPackage(1001, c2sMSG);
 		}
 		#endregion public-method
 
-		#region MonoBehaviour-method
-		private void Start()
+		#region protected-method
+		protected override void OnDestroyEventHandler()
 		{
-			if (_isOpen)
-			{
-				OpenInternal();
-			}
-			else 
-			{
-				CloseInternal();
-			}
+			TaskUtility.CancelToken(ref _buttonCts);
 		}
-		#endregion MonoBehaviour-method
-
-		#region private-method
-		private void OpenInternal() 
-		{
-			gameObject.SetActive(true);
-		}
-
-		private void CloseInternal()
-		{
-			gameObject.SetActive(false);
-		}
-		#endregion private-method
+		#endregion protected-method
 	}
 }

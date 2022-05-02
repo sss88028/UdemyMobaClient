@@ -1,15 +1,17 @@
-﻿using Game.Model;
+﻿using CCTU.UIFramework;
+using Game.Model;
 using Game.Net;
 using ProtoMsg;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 namespace Game.UI
 {
-    public class LobbyUIViewer : BaseUIViewer<LobbyUIViewer>
+    public class LobbyUIViewer : UIViewerBase<LobbyUIViewer>
 	{
 		public enum LobbyState 
 		{ 
@@ -18,17 +20,20 @@ namespace Game.UI
 			Entered,
 		}
 
+		#region public-field
+		public Action OnClickMatchingNormalEvent;
+		public Action OnClickCancelMatchingNormalEvent;
+		#endregion public-field
+
 		#region private-field
-		private static string _sceneName = "LobbyUI";
-		private static bool _isOpen = false;
-		private static LobbyState _state;
+		private static string _sceneName = "UI/LobbyUI.unity";
 
 		[SerializeField]
 		private Text _nickNameText;
 		[SerializeField]
 		private Text _rankText;
 		[SerializeField]
-		private UINumberText _cointText;
+		private UINumberText _coinText;
 		[SerializeField]
 		private UINumberText _daimondText;
 		[SerializeField]
@@ -39,97 +44,87 @@ namespace Game.UI
 		private GameObject _matchingRankBtn;
 		[SerializeField]
 		private GameObject _matchingCancelBtn;
+
+		private LobbyState _currentState;
 		#endregion private-field
 
+		#region public-property
+		public Text NickNameText
+		{
+			get
+			{
+				return _nickNameText;
+			}
+		}
+
+		public Text RankText
+		{
+			get
+			{
+				return _rankText;
+			}
+		}
+
+		public UINumberText CoinText 
+		{
+			get 
+			{
+				return _coinText;
+			}
+		}
+
+		public UINumberText DaimondText
+		{
+			get
+			{
+				return _daimondText;
+			}
+		}
+		#endregion public-property
+
 		#region public-method
-		public static void Open()
+		public override Task OnEnter()
 		{
-			_isOpen = true;
-			if (_instance == null)
-			{
-				LoadScene(_sceneName);
-			}
-			else
-			{
-				_instance.OpenInternal();
-			}
+			gameObject.SetActive(true);
+			return base.OnEnter();
 		}
 
-		public static void Close()
+		public override Task OnExit()
 		{
-			_isOpen = false;
-
-			_instance?.CloseInternal();
+			gameObject.SetActive(false);
+			return base.OnExit();
 		}
 
-		public static void LoadScene()
+		public void SetState(LobbyState state) 
 		{
-			LoadScene(_sceneName);
-		}
-
-		public static void SetState(LobbyState state) 
-		{
-			_state = state;
-			_instance?.UpdateState();
+			UpdateState(state);
 		}
 
 		public void OnClickMatchingNormal() 
 		{
-			BufferFactory.CreateAndSendPackage(1300, new LobbyToMatchC2S());
+			OnClickMatchingNormalEvent?.Invoke();
 		}
 
 		public void OnClickCancelMatchingNormal()
 		{
-			BufferFactory.CreateAndSendPackage(1302, new LobbyQuitMatchC2S());
+			OnClickCancelMatchingNormalEvent?.Invoke();
 		}
 
 		public void OnClickMatchingRank()
 		{
 		}
-
-		public void SetRolesInfo()
-		{
-			_nickNameText.text = PlayerModel.Instance.RolesInfo.NickName;
-			_rankText.text = PlayerModel.Instance.RolesInfo.VictoryPoint.ToString();
-			_cointText.SetNumber(PlayerModel.Instance.RolesInfo.GoldCoin);
-			_daimondText.SetNumber(PlayerModel.Instance.RolesInfo.Diamonds);
-		}
 		#endregion public-method
 
-		#region MonoBehaviour-method
-		private void Start()
-		{
-			if (_isOpen)
-			{
-				OpenInternal();
-			}
-			else
-			{
-				CloseInternal();
-			}
-			UpdateState();
-		}
-
-		private void OnEnable()
-		{
-			SetRolesInfo();
-		}
-		#endregion MonoBehaviour-method
-
 		#region private-method
-		private void OpenInternal()
+		private void UpdateState(LobbyState state) 
 		{
-			gameObject.SetActive(true);
-		}
+			if (_currentState == state)
+			{
+				return;
+			}
 
-		private void CloseInternal()
-		{
-			gameObject.SetActive(false);
-		}
-
-		private void UpdateState() 
-		{
-			switch (_state)
+			_currentState = state;
+			switch (_currentState)
 			{
 				case LobbyState.Idle:
 				case LobbyState.Entered:

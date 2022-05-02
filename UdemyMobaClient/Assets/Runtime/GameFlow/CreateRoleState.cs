@@ -8,7 +8,7 @@ namespace Game.State
     public class CreateRoleState : StateMachineBehaviour
 	{
 		#region public-method
-		public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+		public override async void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 		{
 			base.OnStateEnter(animator, stateInfo, layerIndex);
 			RolesUIController.Instance.OpenUI();
