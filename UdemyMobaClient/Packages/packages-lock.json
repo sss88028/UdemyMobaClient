@@ -7,6 +7,13 @@
       "dependencies": {},
       "hash": "04ac3a3ba38456df9e918fa1247264a68403dbca"
     },
+    "com.cctu.uiframework": {
+      "version": "https://github.com/sss88028/UIFramework.git#1.0.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "c8c400802ed9dd9ffbdc8dabf60846f0e14eec87"
+    },
     "com.unity.addressables": {
       "version": "1.17.17",
       "depth": 0,
@@ -36,7 +43,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.rider": {
-      "version": "1.1.4",
+      "version": "1.2.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {

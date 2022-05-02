@@ -1,15 +1,17 @@
-﻿using Game.Model;
+﻿using CCTU.UIFramework;
+using Game.Model;
 using Game.Net;
 using ProtoMsg;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 namespace Game.UI
 {
-    public class LobbyUIViewer : BaseUIViewer<LobbyUIViewer>
+    public class LobbyUIViewer : UIViewerBase<LobbyUIViewer>
 	{
 		public enum LobbyState 
 		{ 
@@ -17,6 +19,11 @@ namespace Game.UI
 			Matching,
 			Entered,
 		}
+
+		#region public-field
+		public Action OnClickMatchingNormalEvent;
+		public Action OnClickCancelMatchingNormalEvent;
+		#endregion public-field
 
 		#region private-field
 		private static string _sceneName = "UI/LobbyUI.unity";
@@ -26,7 +33,7 @@ namespace Game.UI
 		[SerializeField]
 		private Text _rankText;
 		[SerializeField]
-		private UINumberText _cointText;
+		private UINumberText _coinText;
 		[SerializeField]
 		private UINumberText _daimondText;
 		[SerializeField]
@@ -41,72 +48,74 @@ namespace Game.UI
 		private LobbyState _currentState;
 		#endregion private-field
 
+		#region public-property
+		public Text NickNameText
+		{
+			get
+			{
+				return _nickNameText;
+			}
+		}
+
+		public Text RankText
+		{
+			get
+			{
+				return _rankText;
+			}
+		}
+
+		public UINumberText CoinText 
+		{
+			get 
+			{
+				return _coinText;
+			}
+		}
+
+		public UINumberText DaimondText
+		{
+			get
+			{
+				return _daimondText;
+			}
+		}
+		#endregion public-property
+
 		#region public-method
-		public static async void Open()
+		public override Task OnEnter()
 		{
-			var instance = await GetInstance(_sceneName);
-			instance.OpenInternal();
+			gameObject.SetActive(true);
+			return base.OnEnter();
 		}
 
-		public static async void Close()
+		public override Task OnExit()
 		{
-			var instance = await GetInstance(_sceneName);
-			instance?.CloseInternal();
+			gameObject.SetActive(false);
+			return base.OnExit();
 		}
 
-		public static async void LoadScene()
+		public void SetState(LobbyState state) 
 		{
-			await GetInstance(_sceneName);
-		}
-
-		public static async void SetState(LobbyState state) 
-		{
-			var instance = await GetInstance(_sceneName);
-
-			instance?.UpdateState(state);
+			UpdateState(state);
 		}
 
 		public void OnClickMatchingNormal() 
 		{
-			BufferFactory.CreateAndSendPackage(1300, new LobbyToMatchC2S());
+			OnClickMatchingNormalEvent?.Invoke();
 		}
 
 		public void OnClickCancelMatchingNormal()
 		{
-			BufferFactory.CreateAndSendPackage(1302, new LobbyQuitMatchC2S());
+			OnClickCancelMatchingNormalEvent?.Invoke();
 		}
 
 		public void OnClickMatchingRank()
 		{
 		}
-
-		public void SetRolesInfo()
-		{
-			_nickNameText.text = PlayerModel.Instance.RolesInfo.NickName;
-			_rankText.text = PlayerModel.Instance.RolesInfo.VictoryPoint.ToString();
-			_cointText.SetNumber(PlayerModel.Instance.RolesInfo.GoldCoin);
-			_daimondText.SetNumber(PlayerModel.Instance.RolesInfo.Diamonds);
-		}
 		#endregion public-method
 
-		#region MonoBehaviour-method
-		private void OnEnable()
-		{
-			SetRolesInfo();
-		}
-		#endregion MonoBehaviour-method
-
 		#region private-method
-		private void OpenInternal()
-		{
-			gameObject.SetActive(true);
-		}
-
-		private void CloseInternal()
-		{
-			gameObject.SetActive(false);
-		}
-
 		private void UpdateState(LobbyState state) 
 		{
 			if (_currentState == state)

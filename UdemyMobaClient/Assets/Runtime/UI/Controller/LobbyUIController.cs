@@ -1,35 +1,56 @@
-﻿using Game.Model;
+﻿using CCTU.UIFramework;
+using Game.Model;
 using Game.Net;
 using ProtoMsg;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Game.UI
 {
-    public class LobbyUIController : Singleton<LobbyUIController>
+    public class LobbyUIController : MobaUIControllerBase
 	{
+		#region private-field
+		private LobbyUIViewer _viewer;
+
+		private const string _sceneName = "UI/LobbyUI.unity";
+		#endregion private-field
+
 		#region public-method
 		public LobbyUIController()
 		{
+			_handlerDict[typeof(LobbyUIShowEvent)] = HandleShowEvent;
 		}
 
-		public void Load()
+		public override async Task OnEnter()
 		{
-			LobbyUIViewer.LoadScene();
-		}
-
-		public void OpenUI()
-		{
+			_viewer = await GetViewer<LobbyUIViewer>(_sceneName);
+			await _viewer.OnEnter();
 			AddEventListener();
-			LobbyUIViewer.Open();
+			RegisterUIEvent();
 		}
 
-		public void CloseUI()
+		public override Task OnResume()
 		{
+			SetRolesInfo();
+			return base.OnResume();
+		}
+
+		public override async Task OnExit()
+		{
+			UnregisterUIEvent();
 			RemoveEventListener();
-			LobbyUIViewer.Close();
+
+			_viewer = await GetViewer<LobbyUIViewer>(_sceneName);
+			await _viewer.OnExit();
+		}
+
+		public override void RegisterEvent(Dictionary<Type, UIControllerBase> dict)
+		{
+			dict[typeof(LobbyUIShowEvent)] = this;
 		}
 		#endregion public-method
 
@@ -41,6 +62,12 @@ namespace Game.UI
 			NetEvent.Instance.AddEventListener(1302, OnGetLobbyCancelMatchS2C);
 		}
 
+		private void RegisterUIEvent() 
+		{
+			_viewer.OnClickMatchingNormalEvent += OnClickMatchingNormalHandler;
+			_viewer.OnClickCancelMatchingNormalEvent += OnClickCancelMatchingNormalHandler;
+		}
+
 		private void RemoveEventListener()
 		{
 			NetEvent.Instance.RemoveEventListener(1300, OnGetLobbyToMatchS2C);
@@ -48,17 +75,41 @@ namespace Game.UI
 			NetEvent.Instance.RemoveEventListener(1302, OnGetLobbyCancelMatchS2C);
 		}
 
+		private void UnregisterUIEvent()
+		{
+			_viewer.OnClickMatchingNormalEvent -= OnClickMatchingNormalHandler;
+			_viewer.OnClickCancelMatchingNormalEvent -= OnClickCancelMatchingNormalHandler;
+		}
+
+		private async Task HandleShowEvent(IUIEvent uiEvent) 
+		{
+			if (uiEvent is LobbyUIShowEvent showEvent)
+			{
+				if (showEvent.IsShow)
+				{
+					await UIManager.Instance.PushUI((int)UIType.MainUI, this);
+				}
+				else
+				{
+					await UIManager.Instance.PopUI((int)UIType.MainUI, this);
+				}
+			}
+		}
+
 		private async void OnGetLobbyToMatchS2C(BufferEntity response)
 		{
 			var msg = ProtobufHelper.FromBytes<LobbyToMatchS2C>(response.Protocal);
 			if (msg.Result == 0)
 			{
-				LobbyUIViewer.SetState(LobbyUIViewer.LobbyState.Matching);
+				_viewer.SetState(LobbyUIViewer.LobbyState.Matching);
 			}
 			else 
 			{
-				TipUIViewer.SetText("Can't matching");
-				await TipUIViewer.Open();
+				var evt = new TipUIMessageEvent() 
+				{
+					Message = "Can't matching",
+				};
+				await UIManager.Instance.TriggerUIEvent(evt);
 			}
 		}
 
@@ -69,8 +120,8 @@ namespace Game.UI
 			if (msg.Result == 0)
 			{
 				PlayerModel.Instance.RoomInfo = msg.RoomInfo;
-				CloseUI();
-				LobbyUIViewer.SetState(LobbyUIViewer.LobbyState.Entered);
+				UIManager.Instance.PopUI(0, this);
+				_viewer.SetState(LobbyUIViewer.LobbyState.Entered);
 			}
 		}
 
@@ -80,11 +131,29 @@ namespace Game.UI
 
 			if (msg.Result == 0)
 			{
-				LobbyUIViewer.SetState(LobbyUIViewer.LobbyState.Idle);
+				_viewer.SetState(LobbyUIViewer.LobbyState.Idle);
 			}
 			else
 			{
 			}
+		}
+
+		private void OnClickMatchingNormalHandler()
+		{
+			BufferFactory.CreateAndSendPackage(1300, new LobbyToMatchC2S());
+		}
+
+		private void OnClickCancelMatchingNormalHandler()
+		{
+			BufferFactory.CreateAndSendPackage(1302, new LobbyQuitMatchC2S());
+		}
+
+		private void SetRolesInfo()
+		{
+			_viewer.NickNameText.text = PlayerModel.Instance.RolesInfo.NickName;
+			_viewer.RankText.text = PlayerModel.Instance.RolesInfo.VictoryPoint.ToString();
+			_viewer.CoinText.SetNumber(PlayerModel.Instance.RolesInfo.GoldCoin);
+			_viewer.DaimondText.SetNumber(PlayerModel.Instance.RolesInfo.Diamonds);
 		}
 		#endregion private-method
 	}

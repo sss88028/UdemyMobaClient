@@ -1,4 +1,6 @@
-﻿using CCTU.GameDevTools.MonoSingleton;
+﻿
+using CCTU.GameDevTools.MonoSingleton;
+using CCTU.UIFramework;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;

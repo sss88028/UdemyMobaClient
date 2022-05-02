@@ -1,4 +1,6 @@
-﻿using Game.Net;
+﻿using CCTU.UIFramework;
+using Game.Model;
+using Game.Net;
 using ProtoMsg;
 using System;
 using System.Collections;
@@ -7,11 +9,23 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
-using static Game.UI.LoginUIController;
 
 namespace Game.UI
 {
-    public class LoginUIViewer : BaseUIViewer<LoginUIViewer>
+	public interface ILoginInfoProvider 
+	{
+		string Account 
+		{
+			get;
+		}
+
+		string Password
+		{
+			get;
+		}
+	}
+
+    public class LoginUIViewer : UIViewerBase<LoginUIViewer>, ILoginInfoProvider
 	{
 		public enum ButtonEvent 
 		{ 
@@ -22,7 +36,6 @@ namespace Game.UI
 		}
 
 		#region private-field
-		private static string _sceneName = "UI/LoginUI.unity";
 
 		[SerializeField]
 		private InputField _accountInput = null;
@@ -35,26 +48,28 @@ namespace Game.UI
 		private UITaskButton _registerButton;
 
 		private CancellationTokenSource _buttonCts;
+
+		public string Account => _accountInput.text;
+
+		public string Password => _passwordInput.text;
 		#endregion private-field
 
 		#region public-method
-		public async static Task<LoginUIViewer> GetInstance()
-		{
-			var instance = await GetInstance(_sceneName);
-			return instance;
-		}
-
-		public void Open()
+		public override Task OnEnter()
 		{
 			gameObject.SetActive(true);
+			return base.OnEnter();
+		}
+
+		public override Task OnExit()
+		{
+			gameObject.SetActive(false);
+			return base.OnExit();
 		}
 
 		public async Task<ButtonEvent> GetButtonEvent(CancellationToken ct)
 		{
-			if (_buttonCts != null)
-			{
-				TaskUtility.CancelToken(ref _buttonCts);
-			}
+			TaskUtility.CancelToken(ref _buttonCts);
 
 			_buttonCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
 			try
@@ -64,7 +79,6 @@ namespace Game.UI
 				var finishedTask = await Task.WhenAny(buttonTask);
 
 				await finishedTask;
-				_buttonCts.Cancel();
 
 				if (buttonTask.Result == _loginButton)
 				{
@@ -83,37 +97,16 @@ namespace Game.UI
 			}
 			finally
 			{
-				_buttonCts.Dispose();
-				_buttonCts = null;
+				TaskUtility.CancelToken(ref _buttonCts);
 			}
-		}
-
-		public string GetAccount() 
-		{
-			return _accountInput.text;
-		}
-
-		public string GetPassword()
-		{
-			return _passwordInput.text;
-		}
-
-		public void Close()
-		{
-			gameObject.SetActive(false);
 		}
 		#endregion public-method
 
-		#region MonoBehaviour-method
-		protected override void OnDestroy()
+		#region protected-method
+		protected override void OnDestroyEventHandler()
 		{
-			if (_instance == null || _instance != this)
-			{
-				return;
-			}
-			_instance = null;
 			TaskUtility.CancelToken(ref _buttonCts);
 		}
-		#endregion MonoBehaviour-method
+		#endregion protected-method
 	}
 }

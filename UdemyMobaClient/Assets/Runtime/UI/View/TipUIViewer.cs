@@ -1,7 +1,10 @@
-﻿using System;
+﻿using CCTU.UIFramework;
+using Game.Model;
+using Game.Net;
+using ProtoMsg;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -9,68 +12,62 @@ using UnityEngine.UI;
 
 namespace Game.UI
 {
-    public class TipUIViewer : BaseUIViewer<TipUIViewer>
+    public class TipUIViewer : UIViewerBase<TipUIViewer>
 	{
 		#region private-field
-		private static string _sceneName = "UI/TipUI.unity";
 
 		[SerializeField]
 		private Text _hintText;
 		[SerializeField]
 		private UITaskButton _buttonAccept;
 		[SerializeField]
-		private UITaskButton _buttonCancel;
-		[SerializeField]
 		private UITaskButton _buttonClose;
+
+		private CancellationTokenSource _buttonCts;
 		#endregion private-field
 
-		#region public-method
-		public static async Task<bool> Open(CancellationToken ct = default)
+		#region public-property
+		public string HintText
 		{
-			var instance = await GetInstance(_sceneName);
-			return await instance.OpenInternal(ct);
+			set 
+			{
+				_hintText.text = value;
+			}
 		}
-		
-		public static async void SetText(string textContent) 
-		{
-			var instance = await GetInstance(_sceneName);
+		#endregion public-property
 
-			instance?.SetTextInternal(textContent);
-		}
-		#endregion public-method
-		
-		#region private-method
-		private async Task<bool> OpenInternal(CancellationToken ct)
+		#region public-method
+		public override Task OnEnter()
 		{
 			gameObject.SetActive(true);
+			return base.OnEnter();
+		}
 
-			var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+		public override Task OnExit()
+		{
+			gameObject.SetActive(false);
+			return base.OnExit();
+		}
+
+		public async Task<bool> GetConfirm(CancellationToken ct)
+		{
+			TaskUtility.CancelToken(ref _buttonCts);
+			_buttonCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
 			try
 			{
-				var linkedCt = linkedCts.Token;
-				var buttonTask = UIUtility.SelectButton(linkedCt, _buttonAccept, _buttonCancel, _buttonClose);
+				var linkedCt = _buttonCts.Token;
+				var buttonTask = UIUtility.SelectButton(linkedCt, _buttonAccept, _buttonClose);
 				var finishedTask = await Task.WhenAny(buttonTask);
 
 				await finishedTask;
-				linkedCts.Cancel();
 
 				return finishedTask == buttonTask && buttonTask.Result == _buttonAccept;
 			}
 			finally
 			{
-				linkedCts.Dispose();
+				TaskUtility.CancelToken(ref _buttonCts);
 			}
 		}
-
-		private void CloseInternal()
-		{
-			gameObject.SetActive(false);
-		}
-
-		private void SetTextInternal(string textContent) 
-		{
-			_hintText.text = textContent;
-		}
-		#endregion private-method
+		#endregion public-method
 	}
 }
